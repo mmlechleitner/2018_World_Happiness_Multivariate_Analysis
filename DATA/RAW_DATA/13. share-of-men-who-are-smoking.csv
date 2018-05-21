@@ -1,0 +1,795 @@
+Entity,Code,Year, (% of adults)
+Albania,ALB,2000,56.9
+Albania,ALB,2005,54.7
+Albania,ALB,2010,53.1
+Albania,ALB,2012,52.1
+Albania,ALB,2015,51.2
+Andorra,AND,2000,43.6
+Andorra,AND,2005,41.3
+Andorra,AND,2010,39.2
+Andorra,AND,2012,38.5
+Andorra,AND,2015,37.2
+Argentina,ARG,2000,43.7
+Argentina,ARG,2005,38.2
+Argentina,ARG,2010,33.4
+Argentina,ARG,2012,31.8
+Argentina,ARG,2015,29.5
+Armenia,ARM,2000,67.1
+Armenia,ARM,2005,61.5
+Armenia,ARM,2010,56.7
+Armenia,ARM,2012,54.8
+Armenia,ARM,2015,52.3
+Australia,AUS,2000,27.1
+Australia,AUS,2005,23
+Australia,AUS,2010,19.6
+Australia,AUS,2012,18.4
+Australia,AUS,2015,16.7
+Austria,AUT,2000,46.4
+Austria,AUT,2005,42.3
+Austria,AUT,2010,38.8
+Austria,AUT,2012,37.4
+Austria,AUT,2015,35.5
+Azerbaijan,AZE,2000,58.6
+Azerbaijan,AZE,2005,54.1
+Azerbaijan,AZE,2010,49.9
+Azerbaijan,AZE,2012,48.6
+Azerbaijan,AZE,2015,46.5
+Bahrain,BHR,2000,18.2
+Bahrain,BHR,2005,25
+Bahrain,BHR,2010,34.8
+Bahrain,BHR,2012,40.1
+Bahrain,BHR,2015,48.8
+Bangladesh,BGD,2000,63.7
+Bangladesh,BGD,2005,54.2
+Bangladesh,BGD,2010,46.6
+Bangladesh,BGD,2012,43.7
+Bangladesh,BGD,2015,39.8
+Barbados,BRB,2000,13.8
+Barbados,BRB,2005,13.5
+Barbados,BRB,2010,13.2
+Barbados,BRB,2012,13.2
+Barbados,BRB,2015,13.1
+Belarus,BLR,2000,64.1
+Belarus,BLR,2005,57.6
+Belarus,BLR,2010,51.3
+Belarus,BLR,2012,49.4
+Belarus,BLR,2015,46.2
+Belgium,BEL,2000,35.6
+Belgium,BEL,2005,32.1
+Belgium,BEL,2010,29.1
+Belgium,BEL,2012,28
+Belgium,BEL,2015,26.5
+Benin,BEN,2000,12.4
+Benin,BEN,2005,13.8
+Benin,BEN,2010,15.6
+Benin,BEN,2012,16.4
+Benin,BEN,2015,17.7
+Bolivia,BOL,2000,50.9
+Bolivia,BOL,2005,42.8
+Bolivia,BOL,2010,35.8
+Bolivia,BOL,2012,33.6
+Bolivia,BOL,2015,30.5
+Bosnia and Herzegovina,BIH,2000,57.7
+Bosnia and Herzegovina,BIH,2005,53.8
+Bosnia and Herzegovina,BIH,2010,50
+Bosnia and Herzegovina,BIH,2012,49
+Bosnia and Herzegovina,BIH,2015,47.2
+Brazil,BRA,2000,29.4
+Brazil,BRA,2005,25.4
+Brazil,BRA,2010,22.2
+Brazil,BRA,2012,21
+Brazil,BRA,2015,19.3
+Brunei,BRN,2000,29.5
+Brunei,BRN,2005,29.2
+Brunei,BRN,2010,29.1
+Brunei,BRN,2012,29.2
+Brunei,BRN,2015,29.3
+Bulgaria,BGR,2000,58.8
+Bulgaria,BGR,2005,52.7
+Bulgaria,BGR,2010,47.1
+Bulgaria,BGR,2012,45.2
+Bulgaria,BGR,2015,42.4
+Burkina Faso,BFA,2000,23.6
+Burkina Faso,BFA,2005,27
+Burkina Faso,BFA,2010,31.1
+Burkina Faso,BFA,2012,33.1
+Burkina Faso,BFA,2015,36
+Cambodia,KHM,2000,51.2
+Cambodia,KHM,2005,48.4
+Cambodia,KHM,2010,46
+Cambodia,KHM,2012,45.2
+Cambodia,KHM,2015,44.1
+Cameroon,CMR,2000,12.3
+Cameroon,CMR,2005,18.7
+Cameroon,CMR,2010,28.5
+Cameroon,CMR,2012,33.7
+Cameroon,CMR,2015,43.8
+Canada,CAN,2000,29.4
+Canada,CAN,2005,24.8
+Canada,CAN,2010,20.9
+Canada,CAN,2012,19.5
+Canada,CAN,2015,17.7
+Cape Verde,CPV,2000,14.4
+Cape Verde,CPV,2005,16.5
+Cape Verde,CPV,2010,19.1
+Cape Verde,CPV,2012,20.2
+Cape Verde,CPV,2015,22.2
+Central Europe and the Baltics,,2000,48.2091337356415
+Central Europe and the Baltics,,2005,43.1769802229726
+Central Europe and the Baltics,,2010,39.006724526158
+Central Europe and the Baltics,,2012,37.5656400364708
+Central Europe and the Baltics,,2015,35.4308700906856
+Chile,CHL,2000,49.9
+Chile,CHL,2005,46.2
+Chile,CHL,2010,42.8
+Chile,CHL,2012,41.7
+Chile,CHL,2015,40
+China,CHN,2000,55.8
+China,CHN,2005,52.9
+China,CHN,2010,50.1
+China,CHN,2012,49
+China,CHN,2015,47.6
+Colombia,COL,2000,24.5
+Colombia,COL,2005,21.1
+Colombia,COL,2010,18.3
+Colombia,COL,2012,17.2
+Colombia,COL,2015,16
+Comoros,COM,2000,30.6
+Comoros,COM,2005,27.7
+Comoros,COM,2010,25.2
+Comoros,COM,2012,24.4
+Comoros,COM,2015,23.1
+Congo,COG,2000,10.1
+Congo,COG,2005,16.2
+Congo,COG,2010,26.4
+Congo,COG,2012,32.1
+Congo,COG,2015,43.2
+Costa Rica,CRI,2000,27.5
+Costa Rica,CRI,2005,23.7
+Costa Rica,CRI,2010,20.9
+Costa Rica,CRI,2012,19.8
+Costa Rica,CRI,2015,18.5
+Croatia,HRV,2000,40.3
+Croatia,HRV,2005,39.8
+Croatia,HRV,2010,39.4
+Croatia,HRV,2012,39.4
+Croatia,HRV,2015,39.4
+Cuba,CUB,2000,54.7
+Cuba,CUB,2005,54
+Cuba,CUB,2010,53.2
+Cuba,CUB,2012,53.2
+Cuba,CUB,2015,52.7
+Czech Republic,CZE,2000,40.7
+Czech Republic,CZE,2005,39.5
+Czech Republic,CZE,2010,38.5
+Czech Republic,CZE,2012,38
+Czech Republic,CZE,2015,37.4
+Denmark,DNK,2000,41.6
+Denmark,DNK,2005,31.1
+Denmark,DNK,2010,23.4
+Denmark,DNK,2012,21
+Denmark,DNK,2015,17.6
+Dominican Republic,DOM,2000,21.7
+Dominican Republic,DOM,2005,20.4
+Dominican Republic,DOM,2010,19.5
+Dominican Republic,DOM,2012,19.1
+Dominican Republic,DOM,2015,18.8
+Early-demographic dividend,,2000,40.4272621759621
+Early-demographic dividend,,2005,36.2722980052995
+Early-demographic dividend,,2010,33.1974190219725
+Early-demographic dividend,,2012,32.3357272245766
+Early-demographic dividend,,2015,31.1153286928688
+East Asia & Pacific,,2000,55.0326520020139
+East Asia & Pacific,,2005,52.5662052330276
+East Asia & Pacific,,2010,50.4433802261728
+East Asia & Pacific,,2012,49.7547508309789
+East Asia & Pacific,,2015,48.9395252171148
+East Asia & Pacific (IDA & IBRD),,2000,55.4848037069601
+East Asia & Pacific (IDA & IBRD),,2005,53.3417822992478
+East Asia & Pacific (IDA & IBRD),,2010,51.4592007683827
+East Asia & Pacific (IDA & IBRD),,2012,50.8553592425306
+East Asia & Pacific (IDA & IBRD),,2015,50.1435868354514
+East Asia & Pacific (excluding high income),,2000,55.4848037069601
+East Asia & Pacific (excluding high income),,2005,53.3417822992478
+East Asia & Pacific (excluding high income),,2010,51.4592007683827
+East Asia & Pacific (excluding high income),,2012,50.8553592425306
+East Asia & Pacific (excluding high income),,2015,50.1435868354514
+Ecuador,ECU,2000,21.4
+Ecuador,ECU,2005,18.4
+Ecuador,ECU,2010,15.9
+Ecuador,ECU,2012,15.1
+Ecuador,ECU,2015,14
+Egypt,EGY,2000,35.5
+Egypt,EGY,2005,39.3
+Egypt,EGY,2010,43.9
+Egypt,EGY,2012,45.9
+Egypt,EGY,2015,49.9
+Estonia,EST,2000,55.3
+Estonia,EST,2005,49.9
+Estonia,EST,2010,45.2
+Estonia,EST,2012,43.6
+Estonia,EST,2015,41.2
+Ethiopia,ETH,2000,9
+Ethiopia,ETH,2005,9.1
+Ethiopia,ETH,2010,9
+Ethiopia,ETH,2012,8.9
+Ethiopia,ETH,2015,8.9
+Euro area,,2000,39.2550853128816
+Euro area,,2005,36.2539496630589
+Euro area,,2010,33.6115751724723
+Euro area,,2012,32.5763821088264
+Euro area,,2015,31.147505175001
+Europe & Central Asia,,2000,48.2364613896035
+Europe & Central Asia,,2005,44.2357333650644
+Europe & Central Asia,,2010,40.759358532435
+Europe & Central Asia,,2012,39.5340518268493
+Europe & Central Asia,,2015,37.711872137561
+Europe & Central Asia (IDA & IBRD),,2000,58.6622162146442
+Europe & Central Asia (IDA & IBRD),,2005,54.0486416064366
+Europe & Central Asia (IDA & IBRD),,2010,49.9545530687539
+Europe & Central Asia (IDA & IBRD),,2012,48.5239138422513
+Europe & Central Asia (IDA & IBRD),,2015,46.406146191471
+Europe & Central Asia (excluding high income),,2000,59.8913280979465
+Europe & Central Asia (excluding high income),,2005,55.4141050246014
+Europe & Central Asia (excluding high income),,2010,51.3507169786087
+Europe & Central Asia (excluding high income),,2012,49.9189142254998
+Europe & Central Asia (excluding high income),,2015,47.8025529487942
+European Union,,2000,39.9794967110037
+European Union,,2005,36.2143638848521
+European Union,,2010,32.9761158446091
+European Union,,2012,31.7885402904385
+European Union,,2015,30.0881571859022
+Fiji,FJI,2000,52
+Fiji,FJI,2005,46.4
+Fiji,FJI,2010,42.3
+Fiji,FJI,2012,40.6
+Fiji,FJI,2015,38.7
+Finland,FIN,2000,33.8
+Finland,FIN,2005,29.9
+Finland,FIN,2010,26.3
+Finland,FIN,2012,25
+Finland,FIN,2015,23.2
+France,FRA,2000,37.7
+France,FRA,2005,34.8
+France,FRA,2010,32.1
+France,FRA,2012,31.1
+France,FRA,2015,29.8
+Georgia,GEO,2000,63.4
+Georgia,GEO,2005,61.4
+Georgia,GEO,2010,59.6
+Georgia,GEO,2012,58.6
+Georgia,GEO,2015,57.7
+Germany,DEU,2000,38.4
+Germany,DEU,2005,36.1
+Germany,DEU,2010,34.3
+Germany,DEU,2012,33.6
+Germany,DEU,2015,32.4
+Ghana,GHA,2000,9.2
+Ghana,GHA,2005,10.3
+Ghana,GHA,2010,11.6
+Ghana,GHA,2012,12.1
+Ghana,GHA,2015,13.1
+Greece,GRC,2000,63
+Greece,GRC,2005,59.3
+Greece,GRC,2010,55.6
+Greece,GRC,2012,54.3
+Greece,GRC,2015,52.6
+Haiti,HTI,2000,18.4
+Haiti,HTI,2005,19.4
+Haiti,HTI,2010,20.7
+Haiti,HTI,2012,21.2
+Haiti,HTI,2015,22.1
+High income,,2000,37.7352278966675
+High income,,2005,33.7423712019625
+High income,,2010,30.3748944637994
+High income,,2012,29.1805742690296
+High income,,2015,27.5570352431953
+Honduras,HND,2000,60.2
+Honduras,HND,2005,49.2
+Honduras,HND,2010,40.3
+Honduras,HND,2012,37.2
+Honduras,HND,2015,33.3
+Hungary,HUN,2000,46.1
+Hungary,HUN,2005,40.6
+Hungary,HUN,2010,35.9
+Hungary,HUN,2012,34.5
+Hungary,HUN,2015,32
+IBRD only,,2000,47.1374717518558
+IBRD only,,2005,43.3978961540376
+IBRD only,,2010,40.2362916679774
+IBRD only,,2012,39.1689542338242
+IBRD only,,2015,37.6492562004932
+IDA & IBRD total,,2000,45.2387155002858
+IDA & IBRD total,,2005,41.6439762688267
+IDA & IBRD total,,2010,38.6618500795768
+IDA & IBRD total,,2012,37.6492655647832
+IDA & IBRD total,,2015,36.2662443205022
+IDA blend,,2000,26.2476085619196
+IDA blend,,2005,27.2474096630634
+IDA blend,,2010,28.7464376055456
+IDA blend,,2012,29.3540732882965
+IDA blend,,2015,30.6907731587408
+IDA only,,2000,41.3557164010624
+IDA total,,2000,34.943204846801
+IDA total,,2005,32.525425843362
+IDA total,,2010,30.8760165333385
+IDA total,,2012,30.3462072193931
+IDA total,,2015,29.9455038505181
+Iceland,ISL,2000,33.5
+Iceland,ISL,2005,26.5
+Iceland,ISL,2010,21.1
+Iceland,ISL,2012,19.3
+Iceland,ISL,2015,17
+India,IND,2000,35.9
+India,IND,2005,29.5
+India,IND,2010,24.4
+India,IND,2012,22.8
+India,IND,2015,20.4
+Indonesia,IDN,2000,56.2
+Indonesia,IDN,2005,62
+Indonesia,IDN,2010,68.4
+Indonesia,IDN,2012,71.8
+Indonesia,IDN,2015,76.2
+Iran,IRN,2000,30.2
+Iran,IRN,2005,26.8
+Iran,IRN,2010,23.8
+Iran,IRN,2012,22.9
+Iran,IRN,2015,21.5
+Ireland,IRL,2000,33.1
+Ireland,IRL,2005,28.9
+Ireland,IRL,2010,25.5
+Ireland,IRL,2012,24.2
+Ireland,IRL,2015,22.4
+Israel,ISR,2000,43.6
+Israel,ISR,2005,42.5
+Israel,ISR,2010,41.8
+Israel,ISR,2012,41.7
+Israel,ISR,2015,41.2
+Italy,ITA,2000,32.9
+Italy,ITA,2005,31.2
+Italy,ITA,2010,29.7
+Italy,ITA,2012,29.1
+Italy,ITA,2015,28.3
+Jamaica,JAM,2000,29
+Jamaica,JAM,2005,28.9
+Jamaica,JAM,2010,29.3
+Jamaica,JAM,2012,29.5
+Jamaica,JAM,2015,29.9
+Japan,JPN,2000,51.3
+Japan,JPN,2005,44.4
+Japan,JPN,2010,38.4
+Japan,JPN,2012,36.3
+Japan,JPN,2015,33.7
+Jordan,JOR,2000,42
+Jordan,JOR,2005,49.6
+Jordan,JOR,2010,58.9
+Jordan,JOR,2012,63.6
+Jordan,JOR,2015,70.2
+Kazakhstan,KAZ,2000,57.4
+Kazakhstan,KAZ,2005,52.2
+Kazakhstan,KAZ,2010,47.8
+Kazakhstan,KAZ,2012,46.3
+Kazakhstan,KAZ,2015,43.9
+Kenya,KEN,2000,31
+Kenya,KEN,2005,28.5
+Kenya,KEN,2010,26.3
+Kenya,KEN,2012,25.7
+Kenya,KEN,2015,24.6
+Kiribati,KIR,2000,82
+Kiribati,KIR,2005,75.9
+Kiribati,KIR,2010,69.3
+Kiribati,KIR,2012,67.3
+Kiribati,KIR,2015,63.9
+Kyrgyzstan,KGZ,2000,51.1
+Kyrgyzstan,KGZ,2005,50.3
+Kyrgyzstan,KGZ,2010,50.4
+Kyrgyzstan,KGZ,2012,50.2
+Kyrgyzstan,KGZ,2015,50.4
+Laos,LAO,2000,74.2
+Laos,LAO,2005,67.6
+Laos,LAO,2010,61.7
+Laos,LAO,2012,59.8
+Laos,LAO,2015,56.6
+Late-demographic dividend,,2000,52.3847260697804
+Late-demographic dividend,,2005,49.3418340370614
+Late-demographic dividend,,2010,46.5428952562914
+Late-demographic dividend,,2012,45.4318854017519
+Late-demographic dividend,,2015,43.9896563974159
+Latin America & Caribbean,,2000,33.641607957066
+Latin America & Caribbean,,2005,29.0389843698389
+Latin America & Caribbean,,2010,25.2839523947309
+Latin America & Caribbean,,2012,23.9426888653022
+Latin America & Caribbean,,2015,22.0817177124981
+Latin America & Caribbean (IDA & IBRD),,2000,33.0508191366114
+Latin America & Caribbean (IDA & IBRD),,2005,28.3742591089448
+Latin America & Caribbean (IDA & IBRD),,2010,24.5913909836836
+Latin America & Caribbean (IDA & IBRD),,2012,23.2347968794397
+Latin America & Caribbean (IDA & IBRD),,2015,21.3674572828079
+Latin America & Caribbean (excluding high income),,2000,32.931010088605
+Latin America & Caribbean (excluding high income),,2005,28.3305649541614
+Latin America & Caribbean (excluding high income),,2010,24.5967999013158
+Latin America & Caribbean (excluding high income),,2012,23.2585101465319
+Latin America & Caribbean (excluding high income),,2015,21.4083619274741
+Latvia,LVA,2000,57.1
+Latvia,LVA,2005,53.9
+Latvia,LVA,2010,51.6
+Latvia,LVA,2012,50.5
+Latvia,LVA,2015,48.9
+Least developed countries: UN classification,,2000,42.3370955169877
+Least developed countries: UN classification,,2005,37.2205052368875
+Least developed countries: UN classification,,2010,33.0607056143014
+Lebanon,LBN,2000,35.4
+Lebanon,LBN,2005,38.3
+Lebanon,LBN,2010,41.7
+Lebanon,LBN,2012,43
+Lebanon,LBN,2015,45.4
+Lesotho,LSO,2000,35.2
+Lesotho,LSO,2005,40.7
+Lesotho,LSO,2010,47.2
+Lesotho,LSO,2012,50.1
+Lesotho,LSO,2015,55.1
+Liberia,LBR,2000,18.4
+Liberia,LBR,2005,21
+Liberia,LBR,2010,23.9
+Liberia,LBR,2012,25.4
+Liberia,LBR,2015,27.6
+Lithuania,LTU,2000,53.1
+Lithuania,LTU,2005,47.3
+Lithuania,LTU,2010,42.3
+Lithuania,LTU,2012,40.5
+Lithuania,LTU,2015,38.1
+Low & middle income,,2000,45.2359541035966
+Low & middle income,,2005,41.666501041275
+Low & middle income,,2010,38.7012440581574
+Low & middle income,,2012,37.6943081238158
+Low & middle income,,2015,36.3199996277688
+Lower middle income,,2000,40.6602745150788
+Lower middle income,,2005,37.0281368781311
+Lower middle income,,2010,34.4775466368814
+Lower middle income,,2012,33.8147817878301
+Lower middle income,,2015,32.9211580739716
+Luxembourg,LUX,2000,34.3
+Luxembourg,LUX,2005,31.1
+Luxembourg,LUX,2010,28.4
+Luxembourg,LUX,2012,27.4
+Luxembourg,LUX,2015,25.8
+Malawi,MWI,2000,32.8
+Malawi,MWI,2005,30
+Malawi,MWI,2010,27.6
+Malawi,MWI,2012,26.6
+Malawi,MWI,2015,25.4
+Malaysia,MYS,2000,54.8
+Malaysia,MYS,2005,50
+Malaysia,MYS,2010,46.2
+Malaysia,MYS,2012,44.9
+Malaysia,MYS,2015,43
+Mali,MLI,2000,20.6
+Mali,MLI,2005,24.9
+Mali,MLI,2010,30.3
+Mali,MLI,2012,32.6
+Mali,MLI,2015,36.8
+Malta,MLT,2000,38.8
+Malta,MLT,2005,35.4
+Malta,MLT,2010,32.5
+Malta,MLT,2012,31.5
+Malta,MLT,2015,29.7
+Mauritania,MRT,2000,23.9
+Mauritania,MRT,2005,29.2
+Mauritania,MRT,2010,35.8
+Mauritania,MRT,2012,38.9
+Mauritania,MRT,2015,44
+Mauritius,MUS,2000,46.6
+Mauritius,MUS,2005,44.1
+Mauritius,MUS,2010,42
+Mauritius,MUS,2012,41.3
+Mauritius,MUS,2015,40.1
+Mexico,MEX,2000,36.6
+Mexico,MEX,2005,30.2
+Mexico,MEX,2010,25.1
+Mexico,MEX,2012,23.3
+Mexico,MEX,2015,20.8
+Middle income,,2000,46.1563367124192
+Middle income,,2005,42.5147408344564
+Middle income,,2010,39.502854852937
+Middle income,,2012,38.4846854201093
+Middle income,,2015,37.0944255805405
+Moldova,MDA,2000,40.7
+Moldova,MDA,2005,42.1
+Moldova,MDA,2010,44.1
+Moldova,MDA,2012,44.6
+Moldova,MDA,2015,45.7
+Mongolia,MNG,2000,56.9
+Mongolia,MNG,2005,53.6
+Mongolia,MNG,2010,50.3
+Mongolia,MNG,2012,49.3
+Mongolia,MNG,2015,47.7
+Morocco,MAR,2000,33.1
+Morocco,MAR,2005,36.4
+Morocco,MAR,2010,40.6
+Morocco,MAR,2012,42.5
+Morocco,MAR,2015,45.4
+Mozambique,MOZ,2000,42.7
+Mozambique,MOZ,2005,38.5
+Mozambique,MOZ,2010,34.8
+Mozambique,MOZ,2012,33.4
+Mozambique,MOZ,2015,31.4
+Myanmar,MMR,2000,56.6
+Myanmar,MMR,2005,46.4
+Myanmar,MMR,2010,38.3
+Myanmar,MMR,2012,35.2
+Myanmar,MMR,2015,31.6
+Namibia,NAM,2000,29.3
+Namibia,NAM,2005,31.9
+Namibia,NAM,2010,35.1
+Namibia,NAM,2012,36.4
+Namibia,NAM,2015,38.9
+Nauru,NRU,2000,57
+Nauru,NRU,2005,51.6
+Nauru,NRU,2010,46.9
+Nauru,NRU,2012,45.4
+Nauru,NRU,2015,43
+Nepal,NPL,2000,45.6
+Nepal,NPL,2005,42.5
+Nepal,NPL,2010,39.7
+Nepal,NPL,2012,38.7
+Nepal,NPL,2015,37.1
+Netherlands,NLD,2000,36.7
+Netherlands,NLD,2005,32.7
+Netherlands,NLD,2010,29.4
+Netherlands,NLD,2012,27.5
+Netherlands,NLD,2015,26.2
+Niger,NER,2000,9
+Niger,NER,2005,11.3
+Niger,NER,2010,14.4
+Niger,NER,2012,15.9
+Niger,NER,2015,18.6
+Nigeria,NGA,2000,11.3
+Nigeria,NGA,2005,13
+Nigeria,NGA,2010,15
+Nigeria,NGA,2012,15.9
+Nigeria,NGA,2015,17.4
+North America,,2000,27.8716787281566
+North America,,2005,24.7101408728716
+North America,,2010,21.8877716486002
+North America,,2012,20.8467324792494
+North America,,2015,19.3153821301277
+Norway,NOR,2000,43.1
+Norway,NOR,2005,34.7
+Norway,NOR,2010,28
+Norway,NOR,2012,25.5
+Norway,NOR,2015,22.4
+OECD members,,2000,39.0846901755569
+OECD members,,2005,34.689810159372
+OECD members,,2010,30.8875564917149
+OECD members,,2012,29.5069085096512
+OECD members,,2015,27.5943788653063
+Oman,OMN,2000,12.5
+Oman,OMN,2005,14.8
+Oman,OMN,2010,17.5
+Oman,OMN,2012,18.9
+Oman,OMN,2015,21
+Pakistan,PAK,2000,37.4
+Pakistan,PAK,2005,38.5
+Pakistan,PAK,2010,40.2
+Pakistan,PAK,2012,40.6
+Pakistan,PAK,2015,41.9
+Panama,PAN,2000,25.5
+Panama,PAN,2005,18.9
+Panama,PAN,2010,14.1
+Panama,PAN,2012,12.5
+Panama,PAN,2015,10.6
+Paraguay,PRY,2000,46.2
+Paraguay,PRY,2005,39
+Paraguay,PRY,2010,33.1
+Paraguay,PRY,2012,31.3
+Paraguay,PRY,2015,28.3
+Philippines,PHL,2000,59.1
+Philippines,PHL,2005,53.2
+Philippines,PHL,2010,47.6
+Philippines,PHL,2012,45.8
+Philippines,PHL,2015,43
+Poland,POL,2000,46.9
+Poland,POL,2005,41.1
+Poland,POL,2010,36.5
+Poland,POL,2012,34.9
+Poland,POL,2015,32.4
+Portugal,PRT,2000,36.1
+Portugal,PRT,2005,34.5
+Portugal,PRT,2010,32.9
+Portugal,PRT,2012,32.4
+Portugal,PRT,2015,31.5
+Post-demographic dividend,,2000,39.2827910073351
+Post-demographic dividend,,2005,35.1765908292701
+Post-demographic dividend,,2010,31.6137673748474
+Post-demographic dividend,,2012,30.3331927102928
+Post-demographic dividend,,2015,28.5569438414047
+Romania,ROU,2000,52.8
+Romania,ROU,2005,46.6
+Romania,ROU,2010,41.4
+Romania,ROU,2012,39.5
+Romania,ROU,2015,36.9
+Russia,RUS,2000,67.2
+Russia,RUS,2005,64
+Russia,RUS,2010,61.2
+Russia,RUS,2012,60.3
+Russia,RUS,2015,59
+Samoa,WSM,2000,63.4
+Samoa,WSM,2005,54.9
+Samoa,WSM,2010,47.4
+Samoa,WSM,2012,44.8
+Samoa,WSM,2015,41
+Saudi Arabia,SAU,2000,20.2
+Saudi Arabia,SAU,2005,22.3
+Saudi Arabia,SAU,2010,24.9
+Saudi Arabia,SAU,2012,26.3
+Saudi Arabia,SAU,2015,27.9
+Senegal,SEN,2000,17.6
+Senegal,SEN,2005,19.2
+Senegal,SEN,2010,21.2
+Senegal,SEN,2012,22.1
+Senegal,SEN,2015,23.4
+Serbia,SRB,2000,54.6
+Serbia,SRB,2005,50.4
+Serbia,SRB,2010,46.8
+Serbia,SRB,2012,45.5
+Serbia,SRB,2015,43.6
+Seychelles,SYC,2000,48.1
+Seychelles,SYC,2005,46.2
+Seychelles,SYC,2010,44.8
+Seychelles,SYC,2012,44
+Seychelles,SYC,2015,43
+Sierra Leone,SLE,2000,40.1
+Sierra Leone,SLE,2005,45.6
+Sierra Leone,SLE,2010,52.1
+Sierra Leone,SLE,2012,55
+Sierra Leone,SLE,2015,60
+Singapore,SGP,2000,27.4
+Singapore,SGP,2005,27.5
+Singapore,SGP,2010,27.6
+Singapore,SGP,2012,27.7
+Singapore,SGP,2015,28
+Slovakia,SVK,2000,46.2
+Slovakia,SVK,2005,43.7
+Slovakia,SVK,2010,41.4
+Slovakia,SVK,2012,40.7
+Slovakia,SVK,2015,39.7
+Slovenia,SVN,2000,29.9
+Slovenia,SVN,2005,27
+Slovenia,SVN,2010,24.6
+Slovenia,SVN,2012,23.6
+Slovenia,SVN,2015,22.3
+South Africa,ZAF,2000,35.3
+South Africa,ZAF,2005,33.9
+South Africa,ZAF,2010,32.5
+South Africa,ZAF,2012,32.1
+South Africa,ZAF,2015,31.4
+South Asia,,2000,38.7291628912198
+South Asia,,2005,32.8970616312363
+South Asia,,2010,28.3001847335442
+South Asia,,2012,26.8209470284461
+South Asia,,2015,24.7393815586642
+South Asia (IDA & IBRD),,2000,38.7291628912198
+South Asia (IDA & IBRD),,2005,32.8970616312363
+South Asia (IDA & IBRD),,2010,28.3001847335442
+South Asia (IDA & IBRD),,2012,26.8209470284461
+South Asia (IDA & IBRD),,2015,24.7393815586642
+South Korea,KOR,2000,61.5
+South Korea,KOR,2005,57
+South Korea,KOR,2010,53.3
+South Korea,KOR,2012,51.7
+South Korea,KOR,2015,49.8
+Spain,ESP,2000,45.2
+Spain,ESP,2005,39.8
+Spain,ESP,2010,35.3
+Spain,ESP,2012,33.7
+Spain,ESP,2015,31.3
+Sri Lanka,LKA,2000,31.5
+Sri Lanka,LKA,2005,30.2
+Sri Lanka,LKA,2010,29.3
+Sri Lanka,LKA,2012,28.8
+Sri Lanka,LKA,2015,28.4
+Sub-Saharan Africa,,2000,21.1344517901396
+Sub-Saharan Africa,,2005,21.178558863086
+Sub-Saharan Africa,,2010,21.6148732068256
+Sub-Saharan Africa,,2012,21.9566109707161
+Sub-Saharan Africa,,2015,22.6610087381193
+Sub-Saharan Africa (IDA & IBRD),,2000,21.1344517901396
+Sub-Saharan Africa (IDA & IBRD),,2005,21.178558863086
+Sub-Saharan Africa (IDA & IBRD),,2010,21.6148732068256
+Sub-Saharan Africa (IDA & IBRD),,2012,21.9566109707161
+Sub-Saharan Africa (IDA & IBRD),,2015,22.6610087381193
+Sub-Saharan Africa (excluding high income),,2000,21.1288978110798
+Sub-Saharan Africa (excluding high income),,2005,21.1736095111421
+Sub-Saharan Africa (excluding high income),,2010,21.6103064512611
+Sub-Saharan Africa (excluding high income),,2012,21.9525964975273
+Sub-Saharan Africa (excluding high income),,2015,22.657493184237
+Swaziland,SWZ,2000,15.9
+Swaziland,SWZ,2005,16.8
+Swaziland,SWZ,2010,17.8
+Swaziland,SWZ,2012,18.2
+Swaziland,SWZ,2015,19
+Sweden,SWE,2000,32.6
+Sweden,SWE,2005,27.7
+Sweden,SWE,2010,23.8
+Sweden,SWE,2012,22.3
+Sweden,SWE,2015,20.4
+Switzerland,CHE,2000,35
+Switzerland,CHE,2005,31.8
+Switzerland,CHE,2010,29.2
+Switzerland,CHE,2012,28.3
+Switzerland,CHE,2015,26.9
+Tanzania,TZA,2000,37.6
+Tanzania,TZA,2005,33.8
+Tanzania,TZA,2010,30.3
+Tanzania,TZA,2012,29.2
+Tanzania,TZA,2015,27.5
+Thailand,THA,2000,46.6
+Thailand,THA,2005,44.9
+Thailand,THA,2010,43.2
+Thailand,THA,2012,42.3
+Thailand,THA,2015,41.4
+Tonga,TON,2000,54.4
+Tonga,TON,2005,51.8
+Tonga,TON,2010,49.3
+Tonga,TON,2012,48.4
+Tonga,TON,2015,47.3
+Turkey,TUR,2000,58.7
+Turkey,TUR,2005,51.5
+Turkey,TUR,2010,45
+Turkey,TUR,2012,42.7
+Turkey,TUR,2015,39.5
+Uganda,UGA,2000,27.5
+Uganda,UGA,2005,23.1
+Uganda,UGA,2010,19.3
+Uganda,UGA,2012,18.1
+Uganda,UGA,2015,16.4
+Ukraine,UKR,2000,60.2
+Ukraine,UKR,2005,56.4
+Ukraine,UKR,2010,52.6
+Ukraine,UKR,2012,51.4
+Ukraine,UKR,2015,49.4
+United Kingdom,GBR,2000,31.3
+United Kingdom,GBR,2005,26.8
+United Kingdom,GBR,2010,23
+United Kingdom,GBR,2012,21.8
+United Kingdom,GBR,2015,19.9
+United States,USA,2000,27.7
+United States,USA,2005,24.7
+United States,USA,2010,22
+United States,USA,2012,21
+United States,USA,2015,19.5
+Upper middle income,,2000,51.2149534331315
+Upper middle income,,2005,47.6934033020185
+Upper middle income,,2010,44.4513499649963
+Upper middle income,,2012,43.1897582071248
+Upper middle income,,2015,41.4673460429897
+Uruguay,URY,2000,48.1
+Uruguay,URY,2005,39.6
+Uruguay,URY,2010,32.3
+Uruguay,URY,2012,30
+Uruguay,URY,2015,26.7
+Uzbekistan,UZB,2000,30.1
+Uzbekistan,UZB,2005,28.1
+Uzbekistan,UZB,2010,26.5
+Uzbekistan,UZB,2012,25.9
+Uzbekistan,UZB,2015,24.9
+Vietnam,VNM,2000,51.1
+Vietnam,VNM,2005,49.5
+Vietnam,VNM,2010,48.3
+Vietnam,VNM,2012,47.6
+Vietnam,VNM,2015,47.1
+World,OWID_WRL,2000,43.7987993709344
+World,OWID_WRL,2005,40.2260916456429
+World,OWID_WRL,2010,37.2529873520571
+World,OWID_WRL,2012,36.2419042686673
+World,OWID_WRL,2015,34.8640505452091
+Zambia,ZMB,2000,31
+Zambia,ZMB,2005,29.3
+Zambia,ZMB,2010,27.8
+Zambia,ZMB,2012,27.3
+Zambia,ZMB,2015,26.5
+Zimbabwe,ZWE,2000,33.5
+Zimbabwe,ZWE,2005,32.5
+Zimbabwe,ZWE,2010,31.8
+Zimbabwe,ZWE,2012,31.5
+Zimbabwe,ZWE,2015,31.2
