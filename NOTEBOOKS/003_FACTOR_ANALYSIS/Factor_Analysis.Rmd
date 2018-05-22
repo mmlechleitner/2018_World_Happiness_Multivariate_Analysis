@@ -1,0 +1,250 @@
+---
+title: "Factor Analysis on World Dataset"
+author: "Daniel Cooper, Maria Lechleitner, Dahmane Sheikh"
+date: "April 28th 2018"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE, error = FALSE}
+#### Setup ####
+# Required Libraries:
+library(tidyverse)
+library(skimr)
+library(data.table)
+library(magrittr)
+library(sos)
+library(brew)
+library(matrixcalc)
+library(psych)
+
+# Load dataset
+world <- read.csv("C:/Users/mmlec/Desktop/2018_World_Happiness_Multivariate_Analysis/DATA/happiness.csv")
+
+#Selecting only numeric values
+num_only <- happiness %>%
+  select(-Country
+         , -Region
+         , -Total_Population
+         , -Generosity
+         )
+num_only<-data.matrix(num_only)
+num_only<-scale(num_only)
+
+```
+
+
+```{r, echo = FALSE, fig.width=8, fig.height=8, warning = FALSE, message = FALSE}
+#Scatter plots
+temp_scatter <- happiness %>%
+  select(Happiness_Score
+         ,Family
+         ,Health_Life_Expectancy
+         ,Econonmy_GDP_Per_Capita
+         ,Freedom
+         ,Trust_Government_Corruption)
+temp_scatter <- scale(temp_scatter, center = TRUE, scale = TRUE)
+pairs(temp_scatter)
+```
+
+# Introduction:
+We will perform factor analysis of the drug consumption dataset to reduce dimension of the data. The idea is to identify the unobserved, underlying factors of the data that can explain the intercorrelation among the variables. 
+
+First, we want to check if the data is appropriate for factor analysis. It is appropriate either if there are
+- high correleations among the variables or
+- low partial correleation among the variables.
+
+Note: As we are using data with different scales, we will work with the correlation matrix that will be stored in the variable "R". 
+
+### Correlation Matrix
+
+We are computing the Correlation Matrix to see if the variables can be transformed into homogeneous groups. High correlation values indicate that the variables have much in common.
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+R<-cor(num_only)
+
+```
+
+### Partial Correlation Matrix
+
+The Partial correlations measures the linear relationship between two variables after removing the effects of the remaining variables. We want low linear relationship, meaning that the variables have no spurious correlation?
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+S<-matrix(rep(0,(dim(R)[2]^2)),nrow=dim(R)[2])
+diag(S)<-sqrt(diag(solve(R))^(-1))
+
+Q<-S%*%solve(R)%*%S # partial correlation matrix
+
+sum_q2<-sum(lower.triangle(Q)^2)-sum(diag(Q)^2)
+sum_r2<-sum(lower.triangle(R)^2)-sum(diag(R)^2)
+
+```
+
+### KMO
+
+Kaiser-Meyer-Olkin Measure of Sampling Adequacy
+The method compares the squared elements of the partial correlation matrix to the squares of the original correlations. The Measure of Sampling Adequacy (MSA) should be as close to 1 as possible.
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+#First KMO
+KMO1<-1-sum_q2/sum_r2
+
+#Second KMO
+KMO2<-sum_r2/(sum_r2+sum_q2)
+
+#Use of Function KMO, no manual computation needed
+KMO(R) 
+
+```
+
+The overall MSA of our data is 0.9, which indicates a very good data quality in terms of performing Factor Analysis. It means that our variables are highly correlated and that the partial correlations are low. Is that true?? Check cor matrix
+
+### PCA
+
+PCA is performed to extract the number of factors. Question to be asked: How many common factors are to be included in the model?
+
+This requires a determination of how many parameters are going to be involved.
+
+### Number of unique parameters
+
+Formula to caluclate the number of parameters that the correlation matrix contains: p(p+1)/2
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+#number of unique elements in R = 495
+18*19/2
+
+```
+
+### Number of parameters in the factor model with m factors
+
+Formula to caluclate the number of parameters in the factor model: mp + p
+
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+# number of parameters of the linear model with 5 factors = 186 - already a big reduction
+4*18+18
+
+# number of parameters of the linear model with 4 factors = 155 - kinda same reduction
+3*18+18
+
+# number of parameters of the linear model with 3 factors = 124 - num is not decreasing so much
+2*18+18
+
+```
+
+This would result in a significant dimension reduction.
+In this case, we would select m = 5, yielding 186 parameters in the factor model.
+
+However, lets talk a look on the results of PCA.
+
+### Eigenvalues, Eigenvectors
+
+We compute the Eigenvalues and Eigenvectors of the correlation matrix of our smaple as a basis for PCA analysis.
+
+```{r, echo = TRUE, fig.width=8, fig.height=8, warning = FALSE, message = FALSE}
+#Eigenvalues and Eigenvectors
+eigen(R)
+plot(eigen(R)$values, type="b")
+
+```
+
+### Examine Eigenvalues
+
+We examine the eigenvalues to determine the number of principal compenents being considered:
+
+```{r, echo = TRUE, fig.width=8, fig.height=8, warning = FALSE, message = FALSE}
+perc_explained<-eigen(R)$values/28
+cum_explain<-cumsum(perc_explained)
+table<-cbind(eigenvalue=eigen(R)$values,perc_explained,cum_explain)
+table
+
+```
+
+From the table above you can see, that the first 5 components explain 46% of the variation. This is not a sufficient number, so we ... ? tbc
+
+```{r, echo = TRUE, fig.width=8, fig.height=8, warning = FALSE, message = FALSE}
+#Check the sum of eigenvalues
+sum(eigen(R)$values)
+
+```
+
+### Loadings
+
+The loadings show the correlation between factors and variables. We want to optain highly correlated combinations, so the cut-off critierion is 0.5.
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+D<-matrix(rep(0,(28*28)),nrow=28)
+diag(D)<-sqrt(eigen(R)$values)
+loadings<-eigen(R)$vectors%*%D
+rownames(loadings)<-colnames(R[,1:28])
+loadings[,1:4] #if we decide obtaining 4 factors
+#cov(loadings) #are factors uncorrelated with each other ???
+
+```
+
+### Communalities -------------- EDIT -------------------
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+Communalities<-matrix(rep(0,29),nrow=29)
+Communalities[1]<-sum(loadings[1,1:4]^2)
+Communalities[2]<-sum(loadings[2,1:4]^2)
+Communalities[3]<-sum(loadings[3,1:4]^2)
+Communalities[4]<-sum(loadings[4,1:4]^2)
+Communalities[5]<-sum(loadings[5,1:4]^2)
+Communalities[6]<-sum(loadings[6,1:4]^2)
+Communalities[7]<-sum(loadings[7,1:4]^2)
+Communalities[8]<-sum(loadings[8,1:4]^2)
+Communalities[9]<-sum(loadings[9,1:4]^2)
+Communalities[10]<-sum(loadings[10,1:4]^2)
+Communalities[11]<-sum(loadings[11,1:4]^2)
+Communalities[12]<-sum(loadings[12,1:4]^2)
+Communalities[13]<-sum(loadings[13,1:4]^2)
+Communalities[14]<-sum(loadings[14,1:4]^2)
+Communalities[15]<-sum(loadings[15,1:4]^2)
+Communalities[16]<-sum(loadings[16,1:4]^2)
+Communalities[17]<-sum(loadings[17,1:4]^2)
+Communalities[18]<-sum(loadings[18,1:4]^2)
+Communalities[19]<-sum(loadings[19,1:4]^2)
+Communalities[20]<-sum(loadings[20,1:4]^2)
+Communalities[21]<-sum(loadings[21,1:4]^2)
+Communalities[22]<-sum(loadings[22,1:4]^2)
+Communalities[23]<-sum(loadings[23,1:4]^2)
+Communalities[24]<-sum(loadings[24,1:4]^2)
+Communalities[25]<-sum(loadings[25,1:4]^2)
+Communalities[26]<-sum(loadings[26,1:4]^2)
+Communalities[27]<-sum(loadings[27,1:4]^2)
+Communalities[28]<-sum(loadings[28,1:4]^2)
+Communalities[29]<-sum(Communalities)
+rownames(Communalities)<-c(dimnames(R)[[1]],"total")
+#Communalities
+
+sum(eigen(R)$values[1:4])
+
+Psi<-matrix(rep(0,961),nrow=28)
+diag(Psi)<-c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)-Communalities[1:28]
+#Psi
+
+```
+
+### Residuals
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+#factors that are not explained by the model
+Residual_R<-R-loadings[,1:4]%*%t(loadings[,1:4])-Psi
+dimnames(Residual_R)<-dimnames(R)
+Residual_R
+
+```
+
+### Varimax
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+#LETS IMPROVE THE LOADINGS SOLUTION
+varimax(loadings[,1:4])
+eigen(R)$values
+#rotated loadings
+loadings(varimax(loadings[,1:4]))
+
+```
