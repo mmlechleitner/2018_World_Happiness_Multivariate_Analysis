@@ -102,6 +102,11 @@ QQplot on power transformed data: (better results)
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 
 best_df <- as.data.frame(best_df)
+
+#new df to use for further analysis
+#full_best_df <- cbind(happiness[,2:3],best_df) 
+#write.csv(full_best_df,file="full_best_df.csv")
+
 rownames(best_df) <- happiness[1:132,2]
 
 n <- nrow(best_df); p <- ncol(best_df)
