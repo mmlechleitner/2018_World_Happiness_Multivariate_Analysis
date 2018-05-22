@@ -1,0 +1,159 @@
+---
+title: "PCA"
+output: html_document
+---
+
+Here I am proceeding in 2 parts. Firstly, I am assesing the multivariate normality through the QQ Plot, to see if we should apply any power transformation on our variables. Secondly, I am applying the PCA. 
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+#------------------------------------------LOADING-------------------------------------------------
+require(FactoMineR)
+require(dplyr)
+require(ggplot2)
+require(ggcorrplot)
+require(bestNormalize)
+require(reshape2)
+
+happiness <- read.csv("DATA/WorldAnalysis.csv", stringsAsFactors = FALSE)
+```
+
+Overview of the distribution of each variable of the df:
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+
+
+
+temp1 <- as.matrix(subset(happiness[4:16]))
+temp2 <- as.matrix(subset(happiness[17:32]))
+
+
+ggplot(data = melt(temp1), mapping = aes(x = value)) + 
+    geom_histogram(bins = 20) + facet_wrap(~Var2, scales = 'free_x')
+ggplot(data = melt(temp2), mapping = aes(x = value)) + 
+    geom_histogram(bins = 20) + facet_wrap(~Var2, scales = 'free_x')
+
+rm(temp1,temp2)
+
+
+```
+
+QQPlot to assess the multivariate normality on Raw data:
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+
+temp_df <- happiness %>% select(-X,-Country,-Region)
+rownames(temp_df) <- happiness[1:132,2]
+
+n <- nrow(temp_df); p <- ncol(temp_df)
+
+mean <- colMeans(temp_df)
+cov <- cov(temp_df)
+
+# ordering mahalanobis distances
+d_square <- mahalanobis(temp_df, mean,cov, tol=1e-20)
+d_square <- sort(d_square)
+
+# Generating a vector of quantiles
+quantiles=(1:n-0.5)/n
+x <- qchisq(quantiles,df=p)
+
+# Plot
+
+plot(x, d_square,
+     pch=4, xlim=c(0,max(x)*1.2), ylim=c(0,max(d_square)*1.2),
+     xlab="Chi-squared quantiles",
+     ylab="Mahalanobis distances",
+     main="QQ plot")
+abline(a = 0, b = 1, col="blue")
+text(x,d_square, labels=rownames(temp_df), pos=4,cex=0.7)
+
+rm(cov,d_square,mean,n,p,quantiles,x)
+```
+
+Power transformation:
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+
+temp_df <- happiness %>% select(-X,-Country,-Region)
+
+normal.list.df <-lapply(temp_df, function(x) bestNormalize(x)) 
+
+#convert list to a dataframe for whites
+normal.df<-normal.list.df[[1]][[1]]
+for (i in 2:length(normal.list.df)) {
+    normal.df <- cbind(normal.df ,normal.list.df[[i]][[1]])
+     }
+colnames(normal.df) <- colnames(temp_df)
+
+ggplot(data = melt(normal.df), mapping = aes(x = value)) + 
+    geom_histogram(bins = 20) + facet_wrap(~Var2, scales = 'free_x')
+
+best_df <- normal.df
+
+rm(i,normal.df,normal.list.df)
+
+```
+
+QQplot on power transformed data: (better results)
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+
+best_df <- as.data.frame(best_df)
+rownames(best_df) <- happiness[1:132,2]
+
+n <- nrow(best_df); p <- ncol(best_df)
+mean <- colMeans(best_df)
+cov <- cov(best_df)
+
+# ordering mahalanobis distances
+d_square <- mahalanobis(best_df, mean,cov) # tol=1e-20) is used bc R is detecting singular 
+d_square <- sort(d_square)
+
+# Generating a vector of quantiles
+quantiles=(1:n-0.5)/n
+x <- qchisq(quantiles,df=p)
+
+# Plot
+
+plot(x, d_square,
+     pch=4, xlim=c(0,max(x)*1.2), ylim=c(0,max(d_square)*1.2),
+     xlab="Chi-squared quantiles",
+     ylab="Mahalanobis distances",
+     main="QQ plot")
+abline(a = 0, b = 1, col="blue")
+
+text(x,d_square, labels=rownames(best_df), pos=4,cex=0.7)
+
+rm(cov,d_square, mean,n,p,quantiles,x)
+```
+
+As the multivariate normality is respected only when normalizing, 
+we are using the best_df to perform the Principal Component Analysis:
+
+PCA analysis on the 29 variables:
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+
+pca1 <- PCA(best_df, graph=TRUE)
+
+```
+
+PCA analysis on the variables contributing the most (based on KMO) and based on logic, and correlation matrix:
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+
+sub_best <- best_df %>% 
+  select(-Total_Population,-Agricultural_Land_Percentage,-Forest_Area_Land_Percentage,  -Suicide_Index,-Alcohol_Consumption_Index,-Generosity,Air_Pollution,-Cellular_Subscriber_Index)
+
+pca1 <- PCA(sub_best, graph=F)
+pca1$eig
+pca1$var
+```
+
+QUESTIONS:
+
+1) Using the best_df for analysis recommended? -> PCA,FA,Cluster Analysis,etc... 
+2) 60% of variances explained by 2 principal components is good in this context?
+3) Other thoughts..?
+
+
