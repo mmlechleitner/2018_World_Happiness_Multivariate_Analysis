@@ -3,9 +3,9 @@ title: "Factor Analysis on World Dataset"
 author: "Daniel Cooper, Maria Lechleitner, Dahmane Sheikh"
 date: "April 28th 2018"
 output:
+  pdf_document: default
   html_document:
     df_print: paged
-  pdf_document: default
 ---
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE, error = FALSE}
