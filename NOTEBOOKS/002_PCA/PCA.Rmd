@@ -15,6 +15,7 @@ require(bestNormalize)
 require(reshape2)
 
 happiness <- read.csv("DATA/WorldAnalysis.csv", stringsAsFactors = FALSE)
+#If trouble using this code to import the file, go to DATA folder, click on the file and import it manually
 ```
 
 Overview of the distribution of each variable of the df:
