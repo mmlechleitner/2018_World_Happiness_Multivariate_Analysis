@@ -1,0 +1,142 @@
+---
+title: "Multivariate Normality Assessment"
+output: html_document
+---
+
+Here we are performing a multivariate normality assessment. In such a way, we are first of all, getting an overview of the distribution of all variables, performing a QQ-plot. As discovered, the distribution of the variables are skewed, it is why we are performing some power transformation on all variables to replot the mahalanobis distance to see the change in the multivariate normality.
+
+As a conclusion, we are continuing our analysis based on the new dataframe with more normal distributions. 
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+#------------------------------------------LOADING-------------------------------------------------
+require(dplyr)
+require(ggplot2)
+require(ggcorrplot)
+require(bestNormalize)
+require(reshape2)
+
+happiness <- read.csv("C:/Users/A541U/Desktop/Semester 2/Descriptive R Project/2018_World_Happiness_Multivariate_Analysis/DATA/happiness.csv")
+
+# happiness <- read.csv("DATA/happiness.csv", stringsAsFactors = FALSE)
+# For some reasons, I cannot run this line of code to import the dataset
+```
+
+Overview of the distribution of each variable of the df:
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+
+
+
+temp1 <- as.matrix(subset(happiness[4:16]))
+temp2 <- as.matrix(subset(happiness[17:32]))
+
+
+ggplot(data = melt(temp1), mapping = aes(x = value)) + 
+    geom_histogram(bins = 20) + facet_wrap(~Var2, scales = 'free_x')
+ggplot(data = melt(temp2), mapping = aes(x = value)) + 
+    geom_histogram(bins = 20) + facet_wrap(~Var2, scales = 'free_x')
+
+rm(temp1,temp2)
+
+
+```
+
+QQPlot to assess the multivariate normality on Raw data:
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+
+temp_df <- happiness %>% select(-X,-Country,-Region)
+rownames(temp_df) <- happiness[1:132,2]
+
+n <- nrow(temp_df); p <- ncol(temp_df)
+
+mean <- colMeans(temp_df)
+cov <- cov(temp_df)
+
+# ordering mahalanobis distances
+d_square <- mahalanobis(temp_df, mean,cov, tol=1e-20)
+d_square <- sort(d_square)
+
+# Generating a vector of quantiles
+quantiles=(1:n-0.5)/n
+x <- qchisq(quantiles,df=p)
+
+# Plot
+
+plot(x, d_square,
+     pch=4, xlim=c(0,max(x)*1.2), ylim=c(0,max(d_square)*1.2),
+     xlab="Chi-squared quantiles",
+     ylab="Mahalanobis distances",
+     main="QQ plot")
+abline(a = 0, b = 1, col="blue")
+text(x,d_square, labels=rownames(temp_df), pos=4,cex=0.7)
+
+rm(cov,d_square,mean,n,p,quantiles,x)
+```
+
+Power transformation:
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+
+temp_df <- happiness %>% select(-X,-Country,-Region)
+
+normal.list.df <-lapply(temp_df, function(x) bestNormalize(x)) 
+
+#convert list to a dataframe for whites
+normal.df<-normal.list.df[[1]][[1]]
+for (i in 2:length(normal.list.df)) {
+    normal.df <- cbind(normal.df ,normal.list.df[[i]][[1]])
+     }
+colnames(normal.df) <- colnames(temp_df)
+
+ggplot(data = melt(normal.df), mapping = aes(x = value)) + 
+    geom_histogram(bins = 20) + facet_wrap(~Var2, scales = 'free_x')
+
+best_df <- normal.df
+
+rm(i,normal.df,normal.list.df)
+
+```
+
+QQplot on power transformed data: (better results)
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+
+best_df <- as.data.frame(best_df)
+
+#new df to use for further analysis
+#full_best_df <- cbind(happiness[,2:3],best_df) 
+#write.csv(full_best_df,file="full_best_df.csv")
+
+rownames(best_df) <- happiness[1:132,2]
+
+n <- nrow(best_df); p <- ncol(best_df)
+mean <- colMeans(best_df)
+cov <- cov(best_df)
+
+# ordering mahalanobis distances
+d_square <- mahalanobis(best_df, mean,cov) # tol=1e-20) is used bc R is detecting singular 
+d_square <- sort(d_square)
+
+# Generating a vector of quantiles
+quantiles=(1:n-0.5)/n
+x <- qchisq(quantiles,df=p)
+
+# Plot
+
+plot(x, d_square,
+     pch=4, xlim=c(0,max(x)*1.2), ylim=c(0,max(d_square)*1.2),
+     xlab="Chi-squared quantiles",
+     ylab="Mahalanobis distances",
+     main="QQ plot")
+abline(a = 0, b = 1, col="blue")
+
+text(x,d_square, labels=rownames(best_df), pos=4,cex=0.7)
+
+rm(cov,d_square, mean,n,p,quantiles,x)
+```
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+
+rm(best_df,happiness,temp_df)
+```
