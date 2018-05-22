@@ -14,8 +14,10 @@ require(ggcorrplot)
 require(bestNormalize)
 require(reshape2)
 
-happiness <- read.csv("DATA/WorldAnalysis.csv", stringsAsFactors = FALSE)
-#If trouble using this code to import the file, go to DATA folder, click on the file and import it manually
+happiness <- read.csv("C:/Users/A541U/Desktop/Semester 2/Descriptive R Project/2018_World_Happiness_Multivariate_Analysis/DATA/happiness.csv")
+
+# happiness <- read.csv("DATA/happiness.csv", stringsAsFactors = FALSE)
+# For some reasons, I cannot run this line of code to import the dataset
 ```
 
 Overview of the distribution of each variable of the df:
@@ -146,9 +148,9 @@ PCA analysis on the variables contributing the most (based on KMO) and based on 
 sub_best <- best_df %>% 
   select(-Total_Population,-Agricultural_Land_Percentage,-Forest_Area_Land_Percentage,  -Suicide_Index,-Alcohol_Consumption_Index,-Generosity,Air_Pollution,-Cellular_Subscriber_Index)
 
-pca1 <- PCA(sub_best, graph=F)
+pca1 <- PCA(sub_best, graph=T)
 pca1$eig
-pca1$var
+#pca1$var
 ```
 
 QUESTIONS:
