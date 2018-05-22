@@ -1,0 +1,9 @@
+Reject:
+- Total_Population (Loadings + KMO)
+- Mental_and_Substance_Disorder_Index (Loadings)
+- Compulsory_Education_in_Years (Loadings)
+- Agricultural_Land_Percentage (Loadings)
+- Happiness_Score (Target Variable)
+- Generosity (KMO)
+- Forest_Area_Land_Percentage (KMO)
+- Suicide_Index (KMO)
