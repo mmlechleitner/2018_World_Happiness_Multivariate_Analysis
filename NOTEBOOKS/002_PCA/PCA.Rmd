@@ -3,6 +3,8 @@ title: "PCA"
 output: html_document
 ---
 
+PCA Analysis based on the transformed df "full_best_df.csv"
+
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 #------------------------------------------LOADING-------------------------------------------------
 require(FactoMineR)
@@ -11,36 +13,36 @@ require(ggplot2)
 require(ggcorrplot)
 require(bestNormalize)
 require(reshape2)
+require(factoextra)
 
 full_best_df <- read.csv("C:/Users/A541U/Desktop/Semester 2/Descriptive R Project/2018_World_Happiness_Multivariate_Analysis/DATA/full_best_df.csv")
 
-temp_df <- full_best_df %>% select(-X,-Country,-Region,-Compulsory_Education_in_Years,-Forest_Area_Land_Percentage)
+temp_df <- full_best_df %>% 
+  select(-X,-Country,-Region,-Happiness_Score,
+         -Total_Population,-Mental_and_Substance_Disorder_Index,-Compulsory_Education_in_Years,-Agricultural_Land_Percentage,-Generosity,-Forest_Area_Land_Percentage,-Suicide_Index,-Legal_Rights_Index)
 ```
 
-PCA analysis on the 29 variables:
-
+PCA Function and biplot of 2 first Principal components:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
-
-pca1 <- PCA(temp_df, graph=TRUE)
-
+res.pca <- PCA(temp_df,graph=T)
 ```
 
-Matrix with eigenvalues and cumulative percentange of variance:
-
+Eigenvalues and first 10 individuals/variables correlation to the 3 first PCs:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
-pca1$eig
+summary(res.pca)
 ```
 
-Correlations between the Principal Components and the variables
-
+Correlation of each variable to the 3 first PCs:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
-pca1$var$coord
+dimdesc(res.pca) #Easy way to see the contribution of each component's variables
+res.pca$var$coord #Easier to compare the contribution of each variables to the components
 ```
 
+
+Linear Regression on Happiness Score with the PCs: (just started)
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 
-rownames(pca1$eig) <- full_best_df[2]
-
-
-pca1$ind$coord
+pccc <- pca1$ind$coord[,1:3]
+lm <- lm(full_best_df$Happiness_Score ~ pccc)
+plot(lm)
 ```
