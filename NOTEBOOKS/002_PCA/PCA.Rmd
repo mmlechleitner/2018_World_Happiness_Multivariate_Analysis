@@ -6,14 +6,11 @@ output: html_document
 PCA Analysis based on the transformed df "full_best_df.csv"
 
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
-#------------------------------------------LOADING-------------------------------------------------
-require(FactoMineR)
+#------------------------------------------LOADING---------------------------------------------
 require(dplyr)
-require(ggplot2)
-require(ggcorrplot)
-require(bestNormalize)
-require(reshape2)
+require(FactoMineR)
 require(factoextra)
+require(corrplot)
 
 full_best_df <- read.csv("C:/Users/A541U/Desktop/Semester 2/Descriptive R Project/2018_World_Happiness_Multivariate_Analysis/DATA/full_best_df.csv")
 
@@ -22,21 +19,144 @@ temp_df <- full_best_df %>%
          -Total_Population,-Mental_and_Substance_Disorder_Index,-Compulsory_Education_in_Years,-Agricultural_Land_Percentage,-Generosity,-Forest_Area_Land_Percentage,-Suicide_Index,-Legal_Rights_Index)
 ```
 
-PCA Function and biplot of 2 first Principal components:
+PCA Function and two correlation plots (PC1,PC2) of the individuals and variables, respectively:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 res.pca <- PCA(temp_df,graph=T)
+print(res.pca)
 ```
 
-Eigenvalues and first 10 individuals/variables correlation to the 3 first PCs:
+Scree Plot (visualize the eigenvalues), and tables to see the contribution of each variable to the 3 or 5 first PCs:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
-summary(res.pca)
-```
+fviz_eig(res.pca, addlabels=TRUE) #Use of factoextra package for visualization instead of factominer
 
-Correlation of each variable to the 3 first PCs:
-```{r, echo = TRUE, fig.width=8, fig.height=8}
 dimdesc(res.pca) #Easy way to see the contribution of each component's variables
 res.pca$var$coord #Easier to compare the contribution of each variables to the components
 ```
+
+Extract the results for variables and individuals, respectively:
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+var <- get_pca_var(res.pca) #variables
+ind <- get_pca_ind(res.pca) #individuals
+
+#var/ind$coord -> coordinates
+#var/ind$cos2 -> quality of the factored map
+#var/ind$contrib -> contributions to the PCs
+```
+
+Factor map used to analyze the quality of representation (cos2) of each variable on the 5 first PCs:
+Note: High cos2 indicates a good representation, a low one shows the opposite. 
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+corrplot(var$cos2, is.corr=F)
+
+# Color by cos2 values: quality on the factor map
+fviz_pca_var(res.pca, col.var = "cos2",
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), 
+             repel = TRUE,
+             alpha.var="cos2") # Avoid text overlapping
+```
+
+The contributions of variables in accounting for the variability in a given principal component are expressed in percentage.
+Now let see the contribution of each variable to the first 5 PCs. (the larger the value, the more its contribution is)
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+head(var$contrib, 20)
+
+corrplot(var$contrib, is.corr=FALSE)   
+
+# Contributions of variables to PC1
+fviz_contrib(res.pca, choice = "var", axes = 1, top = 10)
+# Contributions of variables to PC2
+fviz_contrib(res.pca, choice = "var", axes = 2, top = 10)
+# Total Contributions of variables to PC1 and PC2
+fviz_contrib(res.pca, choice = "var", axes = 1:2, top = 10)
+
+#Highlight the most important variables to PC1 and PC2
+fviz_pca_var(res.pca, col.var = "contrib",
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), repel = TRUE)
+```
+
+Classification of variables into X groups using the kmeans clustering algorithm:
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+# Create a grouping variable using kmeans
+# Create 3 groups of variables (centers = 3)
+set.seed(123)
+res.km <- kmeans(var$coord, centers = 3, nstart = 25)
+grp <- as.factor(res.km$cluster)
+# Color variables by groups
+fviz_pca_var(res.pca, col.var = grp, 
+             palette = c("#0073C2FF", "#EFC000FF", "#868686FF"),
+             legend.title = "Cluster", repel=TRUE)
+```
+
+Country analysis: 
+
+Quality of representation (cos2):
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+ind #loaded before at the same as the one for variable (var)  
+
+fviz_pca_ind(res.pca, col.ind = "cos2", 
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE) # Avoid text overlapping (slow if many points)
+
+fviz_pca_ind(res.pca, pointsize = "cos2", 
+             pointshape = 21, fill = "#E7B800",
+             repel = TRUE) # Avoid text overlapping (slow if many points)
+          
+fviz_pca_ind(res.pca, col.ind = "cos2", pointsize = "cos2",
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE) # Avoid text overlapping (slow if many points)
+
+fviz_cos2(res.pca, choice = "ind", top=30) #Quality of representation graph
+```
+
+
+Visuals of the contribution of countries to the two first PCs:
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+fviz_contrib(res.pca, choice = "ind", axes = 1:2, top=30) #cannot show all countries in once in the graph, not readable)
+```
+
+
+Visuals of the contribution of countries to the two first PCs:
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+
+target_Factorised <- full_best_df
+
+target_Factorised$Happiness_Score <- cut(target_Factorised$Happiness_Score,breaks=3)
+fviz_pca_ind(res.pca,
+             geom.ind = "text", # show points only (nbut not "text")
+             col.ind = target_Factorised$Happiness_Score, # color by groups
+             palette = c("#00AFBB", "#E7B800", "#FC4E07"),
+             addEllipses = TRUE, # Concentration ellipses
+             legend.title = "Groups")
+
+
+# Add confidence ellipses
+fviz_pca_ind(res.pca, geom.ind = "point", col.ind = target_Factorised$Happiness_Score, 
+             palette = c("#00AFBB", "#E7B800", "#FC4E07"),
+             addEllipses = TRUE, ellipse.type = "confidence",
+             legend.title = "Groups"
+             )
+
+
+fviz_pca_ind(res.pca,
+             label = "none", # hide individual labels
+             habillage = target_Factorised$Happiness_Score, # color by groups
+             addEllipses = TRUE, # Concentration ellipses
+             palette = "jco")
+
+
+fviz_pca_biplot(res.pca, repel = TRUE,
+                col.var = "#2E9FDF", # Variables color
+                col.ind = "#696969"  # Individuals color
+                )
+
+fviz_pca_biplot(res.pca, repel = TRUE,
+                col.var = "#2E9FDF", # Variables color
+                col.ind = "#696969"  # Individuals color
+                )
+
+
+```
+
 
 
 Linear Regression on Happiness Score with the PCs: (just started)
