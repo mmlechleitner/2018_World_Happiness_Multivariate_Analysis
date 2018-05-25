@@ -19,63 +19,70 @@ temp_df <- full_best_df %>%
          -Total_Population,-Mental_and_Substance_Disorder_Index,-Compulsory_Education_in_Years,-Agricultural_Land_Percentage,-Generosity,-Forest_Area_Land_Percentage,-Suicide_Index,-Legal_Rights_Index)
 ```
 
-PCA Function and two correlation plots (PC1,PC2) of the individuals and variables, respectively:
+PCA Function, 2 corr. plots of individuals and variables and a scree plot:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 res.pca <- PCA(temp_df,graph=T)
 print(res.pca)
-```
-
-Scree Plot (visualize the eigenvalues), and tables to see the contribution of each variable to the 3 or 5 first PCs:
-```{r, echo = TRUE, fig.width=8, fig.height=8}
 fviz_eig(res.pca, addlabels=TRUE) #Use of factoextra package for visualization instead of factominer
-
-dimdesc(res.pca) #Easy way to see the contribution of each component's variables
-res.pca$var$coord #Easier to compare the contribution of each variables to the components
 ```
+
 
 Extract the results for variables and individuals, respectively:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 var <- get_pca_var(res.pca) #variables
 ind <- get_pca_ind(res.pca) #individuals
 
+row.names(res.pca$ind$coord) <- full_best_df$Country #replace number of each row by country name.
+
+res.pca$ind$coord #same as dimdesc but layout ease the comparison between PCs
+res.pca$var$coord # Contribution of each country to each PCs
+
 #var/ind$coord -> coordinates
 #var/ind$cos2 -> quality of the factored map
 #var/ind$contrib -> contributions to the PCs
 ```
 
-Factor map used to analyze the quality of representation (cos2) of each variable on the 5 first PCs:
+Tables to see the contribution of each variable to the 3 or 5 first PCs:
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+dimdesc(res.pca) #Easy way to see the contribution of each component's variables
+```
+
+Quality of representation (cos2) of each variable and country on the 5 first PCs:
 Note: High cos2 indicates a good representation, a low one shows the opposite. 
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
+#VARIABLES:
 corrplot(var$cos2, is.corr=F)
 
 # Color by cos2 values: quality on the factor map
 fviz_pca_var(res.pca, col.var = "cos2",
              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), 
-             repel = TRUE,
-             alpha.var="cos2") # Avoid text overlapping
+             repel = TRUE) # Avoid text overlapping
+
+#COUNTRIES:
+row.names(res.pca$ind$cos2) <- full_best_df$Country #replace number of each row by country name.
+corrplot(res.pca$ind$cos2[1:45,], is.corr=F)
+corrplot(res.pca$ind$cos2[46:91,], is.corr=F)
+corrplot(res.pca$ind$cos2[91:132,], is.corr=F)
+
+fviz_pca_ind(res.pca, col.ind = "cos2", 
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE) # Avoid text overlapping (slow if many points)
+
+fviz_cos2(res.pca, choice = "ind", top=30) #Quality of representation graph
 ```
 
 The contributions of variables in accounting for the variability in a given principal component are expressed in percentage.
-Now let see the contribution of each variable to the first 5 PCs. (the larger the value, the more its contribution is)
+Now let see the contribution of each variable to the first 5 PCs. (the larger the value, the better)
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
-head(var$contrib, 20)
-
-corrplot(var$contrib, is.corr=FALSE)   
-
-# Contributions of variables to PC1
-fviz_contrib(res.pca, choice = "var", axes = 1, top = 10)
-# Contributions of variables to PC2
-fviz_contrib(res.pca, choice = "var", axes = 2, top = 10)
 # Total Contributions of variables to PC1 and PC2
-fviz_contrib(res.pca, choice = "var", axes = 1:2, top = 10)
+fviz_contrib(res.pca, choice = "var", axes = 1:2, top = 20) #20 variables 
 
-#Highlight the most important variables to PC1 and PC2
-fviz_pca_var(res.pca, col.var = "contrib",
-             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), repel = TRUE)
+fviz_contrib(res.pca, choice = "ind", axes = 1:2, top=40) #TOP 40 Countries (more is not readable)
 ```
 
-Classification of variables into X groups using the kmeans clustering algorithm:
+Classification of variables and countries (separetely) into X groups using the kmeans clustering algorithm:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
+
 # Create a grouping variable using kmeans
 # Create 3 groups of variables (centers = 3)
 set.seed(123)
@@ -85,35 +92,18 @@ grp <- as.factor(res.km$cluster)
 fviz_pca_var(res.pca, col.var = grp, 
              palette = c("#0073C2FF", "#EFC000FF", "#868686FF"),
              legend.title = "Cluster", repel=TRUE)
+
+
+# Create a grouping of countries using kmeans
+# Create 3 groups of countries (centers = 3)
+set.seed(123)
+res.km <- kmeans(ind$coord, centers = 3, nstart = 25)
+grp <- as.factor(res.km$cluster)
+# Color countries by groups
+fviz_pca_ind(res.pca, col.ind = grp, 
+             palette = c("#0073C2FF", "#EFC000FF", "#868686FF"),
+             legend.title = "Cluster", repel=TRUE)
 ```
-
-Country analysis: 
-
-Quality of representation (cos2):
-```{r, echo = TRUE, fig.width=8, fig.height=8}
-ind #loaded before at the same as the one for variable (var)  
-
-fviz_pca_ind(res.pca, col.ind = "cos2", 
-             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             repel = TRUE) # Avoid text overlapping (slow if many points)
-
-fviz_pca_ind(res.pca, pointsize = "cos2", 
-             pointshape = 21, fill = "#E7B800",
-             repel = TRUE) # Avoid text overlapping (slow if many points)
-          
-fviz_pca_ind(res.pca, col.ind = "cos2", pointsize = "cos2",
-             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             repel = TRUE) # Avoid text overlapping (slow if many points)
-
-fviz_cos2(res.pca, choice = "ind", top=30) #Quality of representation graph
-```
-
-
-Visuals of the contribution of countries to the two first PCs:
-```{r, echo = TRUE, fig.width=8, fig.height=8}
-fviz_contrib(res.pca, choice = "ind", axes = 1:2, top=30) #cannot show all countries in once in the graph, not readable)
-```
-
 
 Visuals of the contribution of countries to the two first PCs:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
@@ -128,41 +118,38 @@ fviz_pca_ind(res.pca,
              addEllipses = TRUE, # Concentration ellipses
              legend.title = "Groups")
 
-
-# Add confidence ellipses
-fviz_pca_ind(res.pca, geom.ind = "point", col.ind = target_Factorised$Happiness_Score, 
-             palette = c("#00AFBB", "#E7B800", "#FC4E07"),
-             addEllipses = TRUE, ellipse.type = "confidence",
-             legend.title = "Groups"
-             )
-
-
+###REGION CLUSTER GROUPS ON PCA
 fviz_pca_ind(res.pca,
-             label = "none", # hide individual labels
-             habillage = target_Factorised$Happiness_Score, # color by groups
+             geom.ind = "point", # show points only (nbut not "text")
+             col.ind = full_best_df$Region, # color by groups
+             palette = c("blue","red","yellow","black","brown",
+                         "purple","green","orange","darkgray","darkgoldenrod4"),
              addEllipses = TRUE, # Concentration ellipses
-             palette = "jco")
+             legend.title = "Groups")
 
 
+# bad bad visual
 fviz_pca_biplot(res.pca, repel = TRUE,
                 col.var = "#2E9FDF", # Variables color
-                col.ind = "#696969"  # Individuals color
-                )
-
-fviz_pca_biplot(res.pca, repel = TRUE,
-                col.var = "#2E9FDF", # Variables color
-                col.ind = "#696969"  # Individuals color
-                )
-
-
+                col.ind = "#696969")  # Individuals color
 ```
-
 
 
 Linear Regression on Happiness Score with the PCs: (just started)
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 
-pccc <- pca1$ind$coord[,1:3]
+require(Hmisc);require(psych);require(ggplot2);require(rgl)
+
+
+pccc <- res.pca$ind$coord[,1:3]
 lm <- lm(full_best_df$Happiness_Score ~ pccc)
 plot(lm)
+
+
+predictors <- data.frame(res.pca$ind$coord[,1:3],happiness_score = full_best_df$Happiness_Score)
+fit <- lm(happiness_score~Dim.1 + Dim.3, data=predictors)
+summary(fit)
+
+pairs.panels(temp_df,col="red") #with package psych
+
 ```
