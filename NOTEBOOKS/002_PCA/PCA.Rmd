@@ -161,6 +161,7 @@ singlelr <- lm(full_best_df$Happiness_Score ~ res.pca$ind$coord[,1])
 summary(singlelr)
 plot(full_best_df$Happiness_Score,res.pca$ind$coord[,1])
 abline(lm(res.pca$ind$coord[,1] ~full_best_df$Happiness_Score))
+#text(res.pca$ind$coord[,1],full_best_df$Happiness_Score, label=full_best_df$Country)
 ```
 
 Multiple Linear Regression using 3 Principal Components:
