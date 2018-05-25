@@ -21,11 +21,10 @@ temp_df <- full_best_df %>%
 
 PCA Function, 2 corr. plots of individuals and variables and a scree plot:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
-res.pca <- PCA(temp_df,graph=T)
+res.pca <- PCA(temp_df,graph=T) #Biplot of PC1 and PC2
 print(res.pca)
 fviz_eig(res.pca, addlabels=TRUE) #Use of factoextra package for visualization instead of factominer
 ```
-
 
 Extract the results for variables and individuals, respectively:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
@@ -102,7 +101,7 @@ grp <- as.factor(res.km$cluster)
 # Color countries by groups
 fviz_pca_ind(res.pca, col.ind = grp, 
              palette = c("#0073C2FF", "#EFC000FF", "#868686FF"),
-             legend.title = "Cluster", repel=TRUE)
+             legend.title = "Cluster",repel=TRUE)
 ```
 
 Visuals of the contribution of countries to the two first PCs:
@@ -135,21 +134,67 @@ fviz_pca_biplot(res.pca, repel = TRUE,
 ```
 
 
-Linear Regression on Happiness Score with the PCs: (just started)
+3D Plot visualisation test (not good):
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+require(plot3D)
+
+a <- res.pca$ind$coord[,1]
+b <- res.pca$ind$coord[,2]
+c <- res.pca$ind$coord[,3]
+
+data = data.frame(a,b,c)
+scatter3D(b,c,a)
+```
+
+LINEAR REGRESSION on Happiness Score with the PCs:
+
+Good layout to visualize correlation between set of variables:
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+require(psych)
+pairs.panels(temp_df,col="red")
+```
+
+Simple Linear Regression using only the 1st Principal Component:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 
-require(Hmisc);require(psych);require(ggplot2);require(rgl)
+singlelr <- lm(full_best_df$Happiness_Score ~ res.pca$ind$coord[,1])
+summary(singlelr)
+plot(full_best_df$Happiness_Score,res.pca$ind$coord[,1])
+abline(lm(res.pca$ind$coord[,1] ~full_best_df$Happiness_Score))
+```
 
-
-pccc <- res.pca$ind$coord[,1:3]
-lm <- lm(full_best_df$Happiness_Score ~ pccc)
-plot(lm)
-
+Multiple Linear Regression using 3 Principal Components:
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+require(Hmisc);require(ggplot2);require(rgl)
 
 predictors <- data.frame(res.pca$ind$coord[,1:3],happiness_score = full_best_df$Happiness_Score)
-fit <- lm(happiness_score~Dim.1 + Dim.3, data=predictors)
-summary(fit)
+fit3pcs <- lm(happiness_score~ Dim.1 + Dim.2 + Dim.3, data=predictors)
+summary(fit3pcs)
 
-pairs.panels(temp_df,col="red") #with package psych
+#Another way to do the same...
+#pccc <- res.pca$ind$coord[,1:3] 
+#threepcfit  <- lm(full_best_df$Happiness_Score ~ pccc)
+#summary(threepcfit)
+```
+
+Contrast in Multiple Linear Regression using 1st, 2nd PCs against 1st, 3rd PCs:
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+
+predictors <- data.frame(res.pca$ind$coord[,1:3],happiness_score = full_best_df$Happiness_Score)
+fit2firstpcs <- lm(happiness_score~ Dim.1 + Dim.2, data=predictors)
+summary(fit2firstpcs)
+
+
+fitfirstthirdpcs <- lm(happiness_score~ Dim.1 + Dim.3, data=predictors)
+summary(fitfirstthirdpcs)
+```
+
+As discovered, the 1st and 3rd pcs give much better results than the 1st combined with the 3rd pcs!:
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+fitfirstthirdpcs <- lm(happiness_score~ Dim.1 + Dim.3, data=predictors)
+summary(fitfirstthirdpcs)
+
+plot(predictors$Dim.1,predictors$Dim.2)
+abline(lm(res.pca$ind$coord[,1:2] ~full_best_df$Happiness_Score))
 
 ```
