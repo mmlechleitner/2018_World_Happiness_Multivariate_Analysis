@@ -189,7 +189,7 @@ fitfirstthirdpcs <- lm(happiness_score~ Dim.1 + Dim.3, data=predictors)
 summary(fitfirstthirdpcs)
 ```
 
-As discovered, the 1st and 3rd pcs give much better results than the 1st combined with the 3rd pcs!:
+As discovered, the 1st and 3rd pcs give much better results than the 1st combined with the 2nd pcs!:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 fitfirstthirdpcs <- lm(happiness_score~ Dim.1 + Dim.3, data=predictors)
 summary(fitfirstthirdpcs)
