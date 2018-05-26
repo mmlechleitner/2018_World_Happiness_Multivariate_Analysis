@@ -1,0 +1,256 @@
+---
+title: 'World Happiness Multivariate Analysis: Clustering'
+author: "Daniel Cooper, Maria Lechleitner, Dahmane Sheikh"
+date: "May 26th 2018"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE, error = FALSE}
+#### Setup ####
+# Require Libraries:
+library(tidyverse)
+library(skimr)
+library(ggthemes)
+library(cluster)
+library(factoextra)
+library(NbClust)
+library(clValid)
+library(igraph)
+library(pheatmap)
+library(FactoMineR)
+
+# Load Custom Functions:
+function_files <- paste0("../../SRC/FUNCTIONS/" , (dir(path = "../../SRC/FUNCTIONS/")))
+for(i in seq_along(function_files)) {
+  source(file = function_files[[i]])
+}
+rm(function_files, i)
+
+
+# Load dataset into dataframe
+world_happiness_df <- read.csv(file = "../../DATA/full_best_df.csv")
+rownames(world_happiness_df) <- world_happiness_df$Country
+
+# Subset Data:
+cluster_df <- world_happiness_df %>% 
+  select(
+       -X
+      ,-Country
+      ,-Region
+      ,-Happiness_Score
+      ,-Total_Population
+      ,-Mental_and_Substance_Disorder_Index
+      ,-Compulsory_Education_in_Years
+      ,-Agricultural_Land_Percentage
+      ,-Generosity
+      ,-Forest_Area_Land_Percentage
+      ,-Suicide_Index
+      ,-Legal_Rights_Index
+    )
+
+```
+
+# Introduction:
+In this section of our analysis, we will take an unsupervised machine learning approach and look for natural clusters / segments within our world happiness data. We have already seen some initial correlations between economic indicators and happiness, so we expect to encounter some stable clusters.
+
+We will utilize the k-means clustering algorithm and perform a bootstrap validation to verify cluster stability.
+
+# Distance Measures:
+
+```{r, echo = FALSE, fig.width=8, fig.height=8}
+sample_countries <- sample_n(cluster_df, size = 50)
+res.dist <- get_dist(x = sample_countries, stand = TRUE, method = "pearson")
+fviz_dist(res.dist, 
+   gradient = list(low = "#00AFBB", mid = "white", high = "#FC4E07"))
+
+```
+
+# HeatMap:
+
+```{r, echo = FALSE, fig.width=8, fig.height=8}
+sample_countries <- sample_n(cluster_df, size = 50)
+pheatmap(sample_countries, cutree_rows = 4)
+
+```
+
+# Assessing Clustering Tendency:
+```{r, echo = FALSE, fig.width=8, fig.height=8}
+clust_tendency_vis <- get_clust_tendency(cluster_df, n = nrow(cluster_df)-1)
+clust_tendency_vis
+```
+
+With a relatively low Hopkins statistic, we can conclude that this dataset is not inherently clusterable. We can produce clusters, but it is likely that the boundaries between clusters will be softly defined. This is expected given the variety of indicies we are measuring and the inherent heterogenity of world countries. We expect to achieve better clustering results when applied to the output of PCA / Factor Analysis vs. our relatively raw dataset.
+
+# Standard K-Means:
+### Determining Optimal Number of Clusters with K-Means Approach:
+```{r, echo = FALSE, message = FALSE, warning = FALSE, error = FALSE}
+# Elbow method
+fviz_nbclust(cluster_df, kmeans, method = "wss") +
+    geom_vline(xintercept = 6, linetype = 2)+
+  labs(subtitle = "Elbow method")
+# Silhouette method
+fviz_nbclust(cluster_df, kmeans, method = "silhouette")+
+  labs(subtitle = "Silhouette method")
+# Gap statistic
+# Use verbose = FALSE to hide computing progression.
+set.seed(28439)
+fviz_nbclust(cluster_df, kmeans, nstart = 25,  method = "gap_stat", nboot = 500, verbose = FALSE)+
+  labs(subtitle = "Gap statistic method")
+
+```
+
+### K-Means Clustering
+
+```{r}
+set.seed(24286)
+km.res <- kmeans(cluster_df, 7, nstart = 25)
+# Visualize
+library("factoextra")
+fviz_cluster(km.res, data = cluster_df,
+             ellipse.type = "convex",
+             palette = "jco",
+             ggtheme = theme_minimal())
+```
+
+
+# PAM Clustering:
+### Determining Optimal Number of Clusters with PAM Approach:
+```{r, echo = FALSE, message = FALSE, warning = FALSE, error = FALSE}
+# Elbow Metnod:
+fviz_nbclust(cluster_df, pam, method = "wss") +
+    geom_vline(xintercept = 2, linetype = 2)+
+  labs(subtitle = "Elbow method")
+# Silhouette Method:
+fviz_nbclust(cluster_df, pam, method = "silhouette")+
+  theme_classic() +
+  labs(subtitle = "Silhouette method")
+```
+
+### PAM Clustering:
+
+```{r, echo = FALSE, fig.width=12, fig.height=8}
+set.seed(24286)
+pam.res <- pam(cluster_df, 2)
+
+fviz_cluster(pam.res, 
+             ellipse.type = "t", # Concentration ellipse
+             # star.plot = TRUE,
+             repel = TRUE, # Avoid label overplotting (slow)
+             ggtheme = theme_classic()
+             )
+```
+
+# Hierarchical Clustering:
+
+```{r, echo = FALSE, fig.width=12, fig.height=8}
+set.seed(24286)
+hc_res <- cluster_df %>% 
+  dist(method = "euclidean") %>% 
+  hclust(method = "ward.D2")
+
+# Cut tree into 4 groups
+grp <- cutree(hc_res, k = 4)
+
+fviz_dend(hc_res, k = 4, # Cut in four groups
+          cex = 0.5, # label size
+          k_colors = c("#2E9FDF", "#00AFBB", "#E7B800", "#FC4E07"),
+          color_labels_by_k = TRUE, # color labels by groups
+          rect = TRUE, # Add rectangle around groups
+          rect_border = c("#2E9FDF", "#00AFBB", "#E7B800", "#FC4E07"), 
+          rect_fill = TRUE)
+
+# Visualize in a Scatterplot across two primary PCAs:
+fviz_cluster(list(data = cluster_df, cluster = grp),
+             palette = c("#2E9FDF", "#00AFBB", "#E7B800", "#FC4E07"), 
+             ellipse.type = "convex", # Concentration ellipse
+             repel = TRUE, # Avoid label overplotting (slow)
+             show.clust.cent = FALSE, ggtheme = theme_minimal())
+
+# Visualize in Circular manner:
+fviz_dend(hc_res, cex = 0.5, k = 4, 
+          k_colors = "jco", type = "circular")
+
+# Visualize in Phylogenic manner: 
+fviz_dend(hc_res, k = 4, # Cut in four groups
+          k_colors = "jco",
+          type = "phylogenic", repel = TRUE,
+          phylo_layout = "layout.gem")
+
+```
+
+
+# Hybrid Hierarchical and K-Means Approach:
+```{r, echo = FALSE, fig.width=12, fig.height=8}
+res_hk <-hkmeans(cluster_df, 4)
+fviz_dend(res_hk, cex = 0.6, palette = "jco", 
+          rect = TRUE, rect_border = "jco", rect_fill = TRUE)
+
+fviz_cluster(res_hk, palette = "jco", repel = TRUE,
+             ggtheme = theme_classic())
+
+```
+
+# Fuzzy Clustering Approach:
+```{r, echo = FALSE, fig.width=12, fig.height=8}
+res_fuzzy <- fanny(cluster_df, 2)  # Compute fuzzy clustering with k = 2
+fviz_cluster(res_fuzzy, ellipse.type = "norm", repel = TRUE,
+             palette = "jco", ggtheme = theme_minimal(),
+             legend = "right")
+
+fviz_silhouette(res_fuzzy, palette = "jco",
+                ggtheme = theme_minimal())
+```
+
+# HCPC (Clustering on PCA Output):
+```{r, echo = FALSE, fig.width=12, fig.height=8}
+# Compute PCA with ncp = 3
+res.pca <- PCA(cluster_df, ncp = 3, graph = FALSE)
+# Compute hierarchical clustering on principal components
+res.hcpc <- HCPC(res.pca, graph = FALSE)
+
+fviz_dend(res.hcpc, 
+          cex = 0.7,                     # Label size
+          palette = "jco",               # Color palette see ?ggpubr::ggpar
+          rect = TRUE, rect_fill = TRUE, # Add rectangle around groups
+          rect_border = "jco",           # Rectangle color
+          labels_track_height = 0.8      # Augment the room for labels
+)
+
+fviz_cluster(res.hcpc,
+             repel = TRUE,            # Avoid label overlapping
+             show.clust.cent = TRUE, # Show cluster centers
+             palette = "jco",         # Color palette see ?ggpubr::ggpar
+             ggtheme = theme_minimal(),
+             main = "Factor map"
+)
+
+# Principal components + tree
+plot(res.hcpc, choice = "3D.map")
+
+```
+
+
+# Final Evaluation:
+## Cluster Internal Stability:
+```{r, echo = FALSE, fig.width=12, fig.height=8}
+# Cluster Stability:
+clmethods <- c("hierarchical","kmeans","pam")
+internal_cluster_validation <- clValid(cluster_df, nClust = 2:10, clMethods = clmethods, validation = "internal")
+# Summary
+summary(internal_cluster_validation)
+```
+
+## Cluster Other Stability Measures:
+```{r, echo = FALSE, fig.width=12, fig.height=8}
+# Cluster Stability:
+# Stability measures
+clmethods <- c("hierarchical","kmeans","pam")
+stability_measures <- clValid(cluster_df, nClust = 2:10, clMethods = clmethods, validation = "stability")
+# Display only optimal Scores
+optimalScores(stability_measures)
+
+```
+
