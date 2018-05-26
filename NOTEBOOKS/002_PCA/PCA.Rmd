@@ -3,7 +3,9 @@ title: "PCA"
 output: html_document
 ---
 
-PCA Analysis based on the transformed df "full_best_df.csv"
+#Principal Component Analysis:
+
+To reduce the dimensionality, we are performing hereafter the PCA multivariate technique. In short, it consists of transforming the current variables into a set of principal components, which are uncorrelated between each other. Each Principal Component correspond to a linear combination of the original variables. 
 
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 #------------------------------------------LOADING---------------------------------------------
@@ -13,53 +15,72 @@ require(factoextra)
 require(corrplot)
 require(ggplot2)
 
-full_best_df <- read.csv("C:/Users/A541U/Desktop/Semester 2/Descriptive R Project/2018_World_Happiness_Multivariate_Analysis/DATA/full_best_df.csv")
+# Load dataset into dataframe
+full_best_df <- read.csv(file = "../../DATA/full_best_df.csv")
+
+#row.names(full_best_df) <- full_best_df$Country
 
 temp_df <- full_best_df %>% 
   select(-X,-Country,-Region,-Happiness_Score,
-         -Total_Population,-Mental_and_Substance_Disorder_Index,-Compulsory_Education_in_Years,-Agricultural_Land_Percentage,-Generosity,-Forest_Area_Land_Percentage,-Suicide_Index,-Legal_Rights_Index,-Air_Pollution)
+         -Total_Population,-Mental_and_Substance_Disorder_Index,-Compulsory_Education_in_Years,
+         -Agricultural_Land_Percentage,-Generosity,-Forest_Area_Land_Percentage,
+         -Suicide_Index,-Legal_Rights_Index, - Air_Pollution,
+         -Infant_Immunization_Measles_Index,-Alcohol_Consumption_Index)
 ```
 
-PCA Function, 2 corr. plots of individuals and variables and a scree plot:
+
+First, we are calling the PCA function, which shows two correlation biplots of PC1 & PC2. The first one is the graphical representation of the set of variables while the second one is of the countries. 
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 res.pca <- PCA(temp_df,graph=T) #Biplot of PC1 and PC2
 print(res.pca)
-fviz_eig(res.pca, addlabels=TRUE) #Use of factoextra package for visualization instead of factominer
+```
+
+Scree Plot showing the percentage of explained variance per principal component and secondly the contribution of each variable to each component. 
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+
+fviz_eig(res.pca, addlabels=TRUE) #Scree plot
+dimdesc(res.pca) #Easier way to see the contribution of each component's variables
+
+#res.pca$var$coord #Best way to compare contribution of each variable across several PCs
+#res.pca$ind$coord  #Contribution of each country to the PCs
 ```
 
 Extract the results for variables and individuals, respectively:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
+
 var <- get_pca_var(res.pca) #variables
 ind <- get_pca_ind(res.pca) #individuals
 
-row.names(res.pca$ind$coord) <- full_best_df$Country #replace number of each row by country name.
-
-res.pca$ind$coord #same as dimdesc but layout ease the comparison between PCs
-res.pca$var$coord # Contribution of each country to each PCs
+row.names(res.pca$ind$coord) <- full_best_df$Country
+row.names(res.pca$ind$cos2) <- full_best_df$Country
 
 #var/ind$coord -> coordinates
 #var/ind$cos2 -> quality of the factored map
 #var/ind$contrib -> contributions to the PCs
 ```
 
-Tables to see the contribution of each variable to the 3 or 5 first PCs:
-```{r, echo = TRUE, fig.width=8, fig.height=8}
-dimdesc(res.pca) #Easy way to see the contribution of each component's variables
-```
 
-Quality of representation (cos2) of each variable and country on the 5 first PCs:
+## Quality of Representation (cos2):
+
 Note: High cos2 indicates a good representation, a low one shows the opposite. 
-```{r, echo = TRUE, fig.width=8, fig.height=8}
-#VARIABLES:
-corrplot(var$cos2, is.corr=F)
 
+### Of the variables:
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+corrplot(var$cos2, is.corr=F)
 # Color by cos2 values: quality on the factor map
 fviz_pca_var(res.pca, col.var = "cos2",
              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), 
              repel = TRUE) # Avoid text overlapping
 
-#COUNTRIES:
-row.names(res.pca$ind$cos2) <- full_best_df$Country #replace number of each row by country name.
+# Total cos2 of variables on PC1 and PC2
+fviz_cos2(res.pca, choice = "var", axes = 1:2) 
+
+```
+
+### Of the countries:
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
 corrplot(res.pca$ind$cos2[1:45,], is.corr=F)
 corrplot(res.pca$ind$cos2[46:91,], is.corr=F)
 corrplot(res.pca$ind$cos2[91:132,], is.corr=F)
@@ -68,19 +89,13 @@ fviz_pca_ind(res.pca, col.ind = "cos2",
              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
              repel = TRUE) # Avoid text overlapping (slow if many points)
 
-fviz_cos2(res.pca, choice = "ind", top=30) #Quality of representation graph
+fviz_cos2(res.pca, choice = "ind", top=40) #Quality of representation graph
 ```
 
-The contributions of variables in accounting for the variability in a given principal component are expressed in percentage.
-Now let see the contribution of each variable to the first 5 PCs. (the larger the value, the better)
-```{r, echo = TRUE, fig.width=8, fig.height=8}
-# Total Contributions of variables to PC1 and PC2
-fviz_contrib(res.pca, choice = "var", axes = 1:2, top = 20) #20 variables 
+# Classification into X groups using Kmeans Clustering Algo:
 
-fviz_contrib(res.pca, choice = "ind", axes = 1:2, top=40) #TOP 40 Countries (more is not readable)
-```
+First, trying the algo with a simple clustering method:
 
-Classification of variables and countries (separetely) into X groups using the kmeans clustering algorithm:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 
 # Create a grouping variable using kmeans
@@ -105,23 +120,19 @@ fviz_pca_ind(res.pca, col.ind = grp,
              legend.title = "Cluster",repel=TRUE)
 ```
 
-Visuals of the contribution of countries to the two first PCs:
-```{r, echo = TRUE, fig.width=8, fig.height=8}
+Now trying the same algo, grouping the countries by their happiness score. 
+As the Happiness_Score is a continous variable, let see the results when factorising into 3,4,5 groups. 
 
+```{r, echo = TRUE, fig.width=8, fig.height=8}
 target_Factorised <- full_best_df
 
 target_Factorised$Happiness_Score <- cut(target_Factorised$Happiness_Score,breaks=4)
 fviz_pca_ind(res.pca,
              geom.ind = "text", # show points only (nbut not "text")
              col.ind = target_Factorised$Happiness_Score, # color by groups
-             palette = c("#00AFBB", "#E7B800", "#FC4E07"),
+             palette = c("#00AFBB", "#E7B800", "#FC4E07", "blue"),
              addEllipses = TRUE, # Concentration ellipses
-             legend.title = "Groups")
-
-#  Grouping countries by their "happiness" on the biplot 
-fviz_pca_ind(res.pca, col.ind = target_Factorised$Happiness_Score, 
-             palette = c("red", "yellow", "blue","black"),
-             legend.title = "Cluster",repel=TRUE)
+             legend.title = "Groups", repel=TRUE)
 
 ###REGION CLUSTER GROUPS ON PCA
 fviz_pca_ind(res.pca,
@@ -133,12 +144,17 @@ fviz_pca_ind(res.pca,
              legend.title = "Groups")
 
 
+```
+
+Trying to visualize on the same biplot variables&countries:
+```{r, echo = TRUE, fig.width=8, fig.height=8}
 # bad bad visual
 fviz_pca_biplot(res.pca, repel = TRUE,
                 col.var = "#2E9FDF", # Variables color
                 col.ind = "#696969")  # Individuals color
 ```
 
+## 3D Plot Visualization:
 
 3D Plot visualisation test (not good):
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
@@ -152,25 +168,23 @@ data = data.frame(a,b,c)
 scatter3D(b,c,a)
 ```
 
-LINEAR REGRESSION on Happiness Score with the PCs:
+# Linear Regression on Happiness Score with the PCs:
 
-Good layout to visualize correlation between set of variables:
-```{r, echo = TRUE, fig.width=8, fig.height=8}
-require(psych)
-pairs.panels(temp_df,col="red")
-```
+## Simple Linear Regression (Only with PC1)
 
 Simple Linear Regression using only the 1st Principal Component:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 
-singlelr <- lm(full_best_df$Happiness_Score ~ res.pca$ind$coord[,1])
-summary(singlelr)
-plot(full_best_df$Happiness_Score,res.pca$ind$coord[,1])
-abline(lm(res.pca$ind$coord[,1] ~full_best_df$Happiness_Score))
+singlelm <- lm(full_best_df$Happiness_Score ~ res.pca$ind$coord[,1])
+summary(singlelm)
+plot(res.pca$ind$coord[,1],full_best_df$Happiness_Score)
+abline(singlelm)
 #text(res.pca$ind$coord[,1],full_best_df$Happiness_Score, label=full_best_df$Country)
 ```
 
-Multiple Linear Regression using 3 Principal Components:
+## Multiple Linear Regression (with 3pcs or 2pcs):
+
+MLR with a combination of 3pcs:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 require(Hmisc);require(ggplot2);require(rgl)
 
@@ -184,24 +198,12 @@ summary(fit3pcs)
 #summary(threepcfit)
 ```
 
-Contrast in Multiple Linear Regression using 1st, 2nd PCs against 1st, 3rd PCs:
+MLR with PC1 + PC2 then PC1 + PC3:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 
-predictors <- data.frame(res.pca$ind$coord[,1:3],happiness_score = full_best_df$Happiness_Score)
 fit2firstpcs <- lm(happiness_score~ Dim.1 + Dim.2, data=predictors)
 summary(fit2firstpcs)
 
-
 fitfirstthirdpcs <- lm(happiness_score~ Dim.1 + Dim.3, data=predictors)
 summary(fitfirstthirdpcs)
-```
-
-As discovered, the 1st and 3rd pcs give much better results than the 1st combined with the 2nd pcs!:
-```{r, echo = TRUE, fig.width=8, fig.height=8}
-fitfirstthirdpcs <- lm(happiness_score~ Dim.1 + Dim.3, data=predictors)
-summary(fitfirstthirdpcs)
-
-plot(predictors$Dim.1,predictors$Dim.2)
-abline(lm(res.pca$ind$coord[,1:2] ~full_best_df$Happiness_Score))
-
 ```
