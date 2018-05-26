@@ -11,12 +11,13 @@ require(dplyr)
 require(FactoMineR)
 require(factoextra)
 require(corrplot)
+require(ggplot2)
 
 full_best_df <- read.csv("C:/Users/A541U/Desktop/Semester 2/Descriptive R Project/2018_World_Happiness_Multivariate_Analysis/DATA/full_best_df.csv")
 
 temp_df <- full_best_df %>% 
   select(-X,-Country,-Region,-Happiness_Score,
-         -Total_Population,-Mental_and_Substance_Disorder_Index,-Compulsory_Education_in_Years,-Agricultural_Land_Percentage,-Generosity,-Forest_Area_Land_Percentage,-Suicide_Index,-Legal_Rights_Index)
+         -Total_Population,-Mental_and_Substance_Disorder_Index,-Compulsory_Education_in_Years,-Agricultural_Land_Percentage,-Generosity,-Forest_Area_Land_Percentage,-Suicide_Index,-Legal_Rights_Index,-Air_Pollution)
 ```
 
 PCA Function, 2 corr. plots of individuals and variables and a scree plot:
@@ -109,13 +110,18 @@ Visuals of the contribution of countries to the two first PCs:
 
 target_Factorised <- full_best_df
 
-target_Factorised$Happiness_Score <- cut(target_Factorised$Happiness_Score,breaks=3)
+target_Factorised$Happiness_Score <- cut(target_Factorised$Happiness_Score,breaks=4)
 fviz_pca_ind(res.pca,
              geom.ind = "text", # show points only (nbut not "text")
              col.ind = target_Factorised$Happiness_Score, # color by groups
              palette = c("#00AFBB", "#E7B800", "#FC4E07"),
              addEllipses = TRUE, # Concentration ellipses
              legend.title = "Groups")
+
+#  Grouping countries by their "happiness" on the biplot 
+fviz_pca_ind(res.pca, col.ind = target_Factorised$Happiness_Score, 
+             palette = c("red", "yellow", "blue","black"),
+             legend.title = "Cluster",repel=TRUE)
 
 ###REGION CLUSTER GROUPS ON PCA
 fviz_pca_ind(res.pca,
