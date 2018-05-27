@@ -8,6 +8,13 @@ output:
     df_print: paged
 ---
 
+# Introduction:
+We will perform Factor Analysis (FA) of the world happiness dataset to reduce dimensionality of the input data. The idea is to identify the unobserved, underlying factors of the data that can explain the intercorrelation among the variables. 
+
+### Variable Selection
+
+The input data was scaled using the function BestNormalize to optimize scaling for each variable before computing the correlation coefficients that are used for the analysis. The correlation matrix instead of the covariance-variance matrix is used here because of the different scaling of variables. However, we could also use the covariance-variance matrix here, as the data is normalized before performing FA.
+
 ```{r, echo = FALSE, message = FALSE, warning = FALSE, error = FALSE}
 #### Setup ####
 # Required Libraries:
@@ -23,7 +30,7 @@ library(psych)
 #Load dataset
 happiness_normal <- read.csv("C:/Users/mmlec/Desktop/2018_World_Happiness_Multivariate_Analysis/DATA/full_best_df.csv")
 
-#Selecting only numeric values
+#Selecting only numeric values with KMO>0.6 and Loadings>0.5 
 selected <- happiness_normal %>%
   select(-X,
          -Country,
@@ -41,15 +48,11 @@ selected<-data.matrix(selected)
 
 ```
 
-
-# Introduction:
-We will perform factor analysis of the drug consumption dataset to reduce dimension of the data. The idea is to identify the unobserved, underlying factors of the data that can explain the intercorrelation among the variables. 
+### Check if data is appropriate for FA
 
 First, we want to check if the data is appropriate for factor analysis. It is appropriate either if there are
 - high correleations among the variables or
 - low partial correleation among the variables.
-
-Note: As we are using data with different scales, we will work with the correlation matrix that will be stored in the variable "R". 
 
 ### Correlation Matrix
 
@@ -62,7 +65,7 @@ R<-cor(selected)
 
 ### Partial Correlation Matrix
 
-The Partial correlations measures the linear relationship between two variables after removing the effects of the remaining variables. We want low linear relationship, meaning that the variables have no spurious correlation?
+The Partial correlations measures the linear relationship between two variables after removing the effects of the remaining variables. We want low linear relationship, meaning that the variables have no spurious correlations among each other.
 
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 S<-matrix(rep(0,(dim(R)[2]^2)),nrow=dim(R)[2])
@@ -81,20 +84,19 @@ Kaiser-Meyer-Olkin Measure of Sampling Adequacy
 The method compares the squared elements of the partial correlation matrix to the squares of the original correlations. The Measure of Sampling Adequacy (MSA) should be as close to 1 as possible.
 
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
-#First KMO
-KMO1<-1-sum_q2/sum_r2
-
-#Second KMO
-KMO2<-sum_r2/(sum_r2+sum_q2)
+###First KMO
+#KMO1<-1-sum_q2/sum_r2
+###Second KMO
+#KMO2<-sum_r2/(sum_r2+sum_q2)
 
 #Use of Function KMO, no manual computation needed
 KMO(R) 
 
 ```
 
-The overall MSA of our data is 0.92, which indicates a very good data quality in terms of performing Factor Analysis. It means that our variables are highly correlated and that the partial correlations are low. Is that true?? Check cor matrix
+The overall MSA of our data is 0.92, which indicates a very good data quality in terms of performing Factor Analysis. It means that our variables are highly correlated and that the partial correlations are low.
 
-### PCA
+### PCA to obtain number of factors
 
 PCA is performed to extract the number of factors. Question to be asked: How many common factors are to be included in the model?
 
@@ -105,8 +107,8 @@ This requires a determination of how many parameters are going to be involved.
 Formula to caluclate the number of parameters that the correlation matrix contains: p(p+1)/2
 
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
-#number of unique elements in R = 495
-18*19/2
+#number of unique elements in R = 210
+20*21/2
 
 ```
 
@@ -116,19 +118,19 @@ Formula to caluclate the number of parameters in the factor model: mp + p
 
 
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
-# number of parameters of the linear model with 5 factors = 186 - already a big reduction
-4*18+18
+# number of parameters of the linear model with 4 factors = 100 - already a big reduction
+4*20+20
 
-# number of parameters of the linear model with 4 factors = 155 - kinda same reduction
-3*18+18
+# number of parameters of the linear model with 3 factors = 80 - num is not decreasing so much
+3*20+20
 
-# number of parameters of the linear model with 3 factors = 124 - num is not decreasing so much
-2*18+18
+# number of parameters of the linear model with 2 factors = 60 - num is not decreasing so much
+2*20+20
 
 ```
 
 This would result in a significant dimension reduction.
-In this case, we would select m = 5, yielding 186 parameters in the factor model.
+In this case, we would select m = 3, yielding 80 parameters in the factor model.
 
 However, lets talk a look on the results of PCA.
 
@@ -156,29 +158,31 @@ rm(table)
 
 ```
 
-From the table above you can see, that the first 5 components explain 46% of the variation. This is not a sufficient number, so we ... ? tbc
+From the table above you can see, that the first 3 components explain 72% of the variation. Taking into account our problem, we consider this as a sufficient representation of our data.
 
 ```{r, echo = TRUE, fig.width=8, fig.height=8, warning = FALSE, message = FALSE}
-#Check the sum of eigenvalues
+#Check the sum of eigenvalues (should be equal to the number of variables)
 sum(eigen(R)$values)
 
 ```
 
 ### Loadings
 
-The loadings show the correlation between factors and variables. We want to optain highly correlated combinations, so the cut-off critierion is 0.5.
+The loadings show the correlation between factors and variables. We want to optain highly correlated combinations, so the cut-off critierion is 0.5. If a variable is below the given threashold, we simply exclude it from our analysis.
 
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 D<-matrix(rep(0,(20*20)),nrow=20)
 diag(D)<-sqrt(eigen(R)$values)
 loadings<-eigen(R)$vectors%*%D
 rownames(loadings)<-colnames(R[,1:20])
-loadings[,1:3] #if we decide obtaining 4 factors
+loadings[,1:3] #number of factors obtained
 #cov(loadings) #are factors uncorrelated with each other ???
 
 ```
 
-### Communalities -------------- EDIT -------------------
+### Communalities
+
+The Communality is a measure for how well the model performs for a particular variable. The larger the communality the better the model performance for the j-th indicator. 
 
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 Communalities<-matrix(rep(0,21),nrow=21)
@@ -204,27 +208,46 @@ Communalities[19]<-sum(loadings[19,1:3]^2)
 Communalities[20]<-sum(loadings[20,1:3]^2)
 Communalities[21]<-sum(Communalities)
 rownames(Communalities)<-c(dimnames(R)[[1]],"total")
-#Communalities
+Communalities
 
-sum(eigen(R)$values[1:3])
+sum(eigen(R)$values[1:3]) #Sum of the first 3 eigenvalues
 
-Psi<-matrix(rep(0,961),nrow=20)
+```
+
+These values are like multiple R² values for regression models that predict the variables of intrest from the 3 facotrs.
+Here, the communality value for a given variable can be interpreted as the proportion of variation explained by the three factors and thus, explains how well this model is performing.
+Being precise, that means that the factor analysis does the best job in explaning variation in Electricity Access, Economy, Internet Usage and Child Mortality. Whereas it can not explain Cellular Subscriber, Obesity and Infant Immunization Measles (not even explaining half of the variation) very well.
+
+The total communality value is 14.39. The proportion of the total variation explained by the three factors is 14.39/20 = 72% (same value as cum_explain and first 3 eigenvalues). Therefore, its an alternative assessment of the model than assessment by eigenvalues.
+
+### Specific variances 
+
+Specific variances are computed by subtracting the communality from the variance. Can be found in the diagonal elements of the table presented below.
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+Psi<-matrix(rep(0,400),nrow=20)
 diag(Psi)<-c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)-Communalities[1:20]
-#Psi
+Psi
 
 ```
 
 ### Residuals
 
+The model will have some errors because the it provides only an approximation to the correlation matrix.
+
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 #factors that are not explained by the model
-Residual_R<-R-loadings[,1:4]%*%t(loadings[,1:4])-Psi
+Residual_R<-R-loadings[,1:3]%*%t(loadings[,1:3])-Psi
 dimnames(Residual_R)<-dimnames(R)
 Residual_R
 
 ```
 
-### Varimax
+Residuals should be as close to 0 as possible. 
+
+### Factor rotation - Varimax
+
+We want to rotate the axis to obtain a cleaner interpretation of the data. 
 
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 #LETS IMPROVE THE LOADINGS SOLUTION
@@ -234,3 +257,34 @@ eigen(R)$values
 loadings(varimax(loadings[,1:3]))
 
 ```
+
+### Interpretation
+
+Factor 1: 
+- Economy_GDP_Per_Capital
+- Health_Life_Expectancy
+- Internet_Usage_Index
+- Cellular_Subscriber_Index
+- Birth_Rate_Index
+- Clean_Water_Index
+- HIV_Disease_Index
+- Obesity_Index
+- Electricity_Access_Population_Percentage
+- Entrepreneurship_Cost_Index  
+- Infant_Immunization_Measles_Index 
+- Automotive_Mortality_Index
+- Urban_Population_Percentage 
+
+Factor 2:
+- Family
+- Air_Pollution
+- Alcohol_Consumption_Index
+- Population_Growth_Rate
+
+Factor 3:
+- Freedom
+- Trust_Government_Curruption
+
+
+
+
