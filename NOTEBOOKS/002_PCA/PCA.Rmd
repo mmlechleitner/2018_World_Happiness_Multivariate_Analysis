@@ -207,3 +207,36 @@ summary(fit2firstpcs)
 fitfirstthirdpcs <- lm(happiness_score~ Dim.1 + Dim.3, data=predictors)
 summary(fitfirstthirdpcs)
 ```
+
+Split df into training and validation:
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+#Split data into training and validation samples 
+set.seed(2018)
+train.size <- 0.5
+train.index <- sample.int(length(full_best_df$Happiness_Score),round(length(full_best_df$Happiness_Score) * train.size))
+train.sample <- selection_df[train.index,]
+validation.sample <- selection_df[-train.index,]
+```
+
+# Regression Trees - CART on Happiness_Score:
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+require(rpart)
+require(rpart.plot)
+
+m1 <-rpart(Happiness_Score~ ., data=train.sample, method= "anova")
+m1
+rpart.plot(m1, type=3)
+
+p1 <- predict(m1,validation.sample) #prediction values
+p1
+
+#let see how accurate the algorithm is
+## mean absolute error way to see, (compare the predictions to the actual values)
+
+assess <- function(actual, predicted) { mean(abs(actual - predicted))}
+
+assess(selection_df$Happiness_Score, p1) 
+```
+
+
