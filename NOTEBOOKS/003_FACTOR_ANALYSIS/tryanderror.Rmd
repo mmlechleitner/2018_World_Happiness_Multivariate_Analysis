@@ -1,0 +1,75 @@
+### Plots for Poster
+
+The function "principal" performed bellow substitutes the whole work "manually" done before. ;-)
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+# Varimax Rotated Principal Components
+# retaining 3 components 
+library(psych)
+fit <- principal(selected, nfactors=3, rotate="varimax")
+
+#Analysis of the results:
+fit$loadings # Loadings
+fit$values #Eigenvalues
+fit$communality #=SS loadings for each variable (Infant is the weakest expained in terms of vairance)
+fit$fit #fit of the model to the correlation matrix - 97% 
+fit$residual #residual matrix
+fit$objective #chi-square goodness of fit
+fit$rot.mat
+
+
+screeplot(fa.parallel(selected)$fa.values)
+
+biplot(fit)
+
+fa.plot(fit)
+fa.diagram(fit)
+
+fa.parallel(selected)
+fa.parallel(selected)$fa.values #to see the eigenvalues of the rotated PCs (factors)
+
+res.pca$eig = fa.parallel(selected)$fa.values
+
+
+library(FactoMineR)
+res.mfa <- MFA(selected, group = selected)
+
+fviz_screeplot(fit)
+
+```
+
+
+## Quality of Representation (cos2):
+
+Note: High cos2 indicates a good representation, a low one shows the opposite. 
+
+### Of the variables:
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+res.pca <- PCA(selected)
+res.pca$eig
+res.pca$var
+
+#create new table
+eigenvalueFA<-fa.parallel(selected)$fa.values
+perc_explainedFA<-fa.parallel(selected)$fa.values/20
+cum_explainFA<-cumsum(perc_explained)
+table<-cbind(eigenvalueFA,perc_explainedFA,cum_explainFA)
+table
+
+#change Values
+res.pca$eig = table
+res.pca$var$cos2
+res.pca$eig
+var <- get_pca_var(res.pca) #variables
+
+corrplot(var$cos2, is.corr=F)
+# Color by cos2 values: quality on the factor map
+fviz_pca_var(res.pca, col.var = "cos2",
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), 
+             repel = TRUE) # Avoid text overlapping
+
+# Total cos2 of variables on PC1 and PC2
+fviz_cos2(res.pca, choice = "var", axes = 1:2) 
+
+```
