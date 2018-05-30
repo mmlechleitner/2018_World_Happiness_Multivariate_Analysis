@@ -17,15 +17,13 @@ full_best_df <- read.csv(file = "../../DATA/full_best_df.csv")
 
 temp_df <- full_best_df %>% 
   select(-X,-Country,-Region,-Happiness_Score,
-         -Total_Population,-Mental_and_Substance_Disorder_Index,-Compulsory_Education_in_Years,
-         -Agricultural_Land_Percentage,-Generosity,-Forest_Area_Land_Percentage,
-         -Suicide_Index,-Legal_Rights_Index, - Air_Pollution,
-         -Infant_Immunization_Measles_Index,-Alcohol_Consumption_Index)
+         -Total_Population,-Mental_and_Substance_Disorder_Index,-Compulsory_Education_in_Years, -Agricultural_Land_Percentage,-Generosity,-Forest_Area_Land_Percentage,
+         -Suicide_Index,-Legal_Rights_Index,-Infant_Immunization_Measles_Index)
 ```
 
 First, we are calling the PCA function, which gives a first good overview of correlation biplots on PC1 & PC2. First one being about the variables, while second about the countries.
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
-res.pca <- PCA(temp_df,graph=T) #Biplot of PC1 and PC2
+res.pca <- PCA(temp_df,graph=F) #Biplot of PC1 and PC2
 print(res.pca)
 ```
 
@@ -46,12 +44,10 @@ ggplot(data=temp_for_plot, aes(x=factor(xaxis), y=percentage.of.variance)) +
   geom_text(aes(label= paste0(temp_for_plot$percentage.of.variance, "%")), vjust=-0.3) +
   theme_minimal() + xlab("Dimensions") + ylab("Percentage of explained variances")+
   ggtitle("Scree Plot for PCA")+ theme(plot.title = element_text(hjust = 0.5)) +
-  scale_colour_manual(values = c("1" = "#E08214", "2" = "#E08214")) +
-  annotate(geom = "text", x = 1, y = 30, label = "Country Development", color = "white",
+  annotate(geom = "text", x = 1, y = 21, label = "Country Development", color = "black",
              angle = 90) +
-  annotate(geom = "text", x = 2, y = 05, label = "Freedom", color = "white",
-             angle = 90)
-
+  annotate(geom = "text", x = 2, y = 20, label = "<---- Air Pollution & Alcohol", color = "black",angle = 90) +
+    annotate(geom = "text", x = 3, y = 20, label = "<---- Freedom & Corruption", color = "black",angle = 90)
 #res.pca$var$coord #Best way to compare contribution of each variable across several PCs
 #res.pca$ind$coord  #Contribution of each country to the PCs
 ```
@@ -63,6 +59,8 @@ ind <- get_pca_ind(res.pca) #individuals
 
 row.names(res.pca$ind$coord) <- full_best_df$Country
 row.names(res.pca$ind$cos2) <- full_best_df$Country
+
+corrplot(res.pca$eig, is.corr=F, method="number")
 
 #var/ind$coord -> coordinates
 #var/ind$cos2 -> quality of the factored map
@@ -76,7 +74,13 @@ Note: High cos2 indicates a good representation, a low one shows the opposite.
 ### Of the variables:
 
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
-corrplot(var$cos2, is.corr=F)
+
+require(ggcorrplot)
+
+ggcorrplot(var$cos2, lab=T, insig ="blank") + coord_flip() + ggtitle("Quality of Representation per Dimension")
+
+corrplot(var$cos2, is.corr=F, method="number", title="Qualirt of representation per Dimension", mar=c(0,0,1,0))
+
 # Color by cos2 values: quality on the factor map
 fviz_pca_var(res.pca, col.var = "cos2",
              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), 
