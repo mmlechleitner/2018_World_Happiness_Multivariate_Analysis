@@ -41,6 +41,7 @@ selected <- happiness_normal %>%
          -Compulsory_Education_in_Years,
          -Agricultural_Land_Percentage,
          -Generosity,
+         #-Infant_Immunization_Measles_Index,
          -Forest_Area_Land_Percentage,
          -Suicide_Index,
          -Legal_Rights_Index)
@@ -168,7 +169,7 @@ sum(eigen(R)$values)
 
 ### Loadings
 
-The loadings show the correlation between factors and variables. We want to optain highly correlated combinations, so the cut-off critierion is 0.5. If a variable is below the given threashold, we simply exclude it from our analysis.
+The loadings show the correlation between factors and original variables. This will be used to interpret the factors. We want to optain highly correlated combinations, so the cut-off critierion is 0.5. If a variable is below the given threashold, we simply exclude it from our analysis.
 
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 D<-matrix(rep(0,(20*20)),nrow=20)
@@ -177,6 +178,18 @@ loadings<-eigen(R)$vectors%*%D
 rownames(loadings)<-colnames(R[,1:20])
 loadings[,1:3] #number of factors obtained
 #cov(loadings) #are factors uncorrelated with each other ???
+
+```
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+ #Biplot of PC1 and PC2
+print(res.pca)
+
+```
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+res.pca <- PCA(selected)
+fviz_eig(res.pca, addlabels=TRUE) #Scree plot
 
 ```
 
@@ -260,31 +273,120 @@ loadings(varimax(loadings[,1:3]))
 
 ### Interpretation
 
-Factor 1: 
-- Economy_GDP_Per_Capital
-- Health_Life_Expectancy
-- Internet_Usage_Index
+Factor 1: (Country Development)
+- Economy_GDP_Per_Capital (strong)
+- Health_Life_Expectancy (strong)
+- Internet_Usage_Index (strong)
 - Cellular_Subscriber_Index
+- Child_Mortality_Index (strong)
 - Birth_Rate_Index
-- Clean_Water_Index
-- HIV_Disease_Index
+- Clean_Water_Index (strong)
+- HIV_Disease_Index (strong)
 - Obesity_Index
-- Electricity_Access_Population_Percentage
+- Electricity_Access_Population_Percentage (strong)
 - Entrepreneurship_Cost_Index  
 - Infant_Immunization_Measles_Index 
 - Automotive_Mortality_Index
-- Urban_Population_Percentage 
+- Urban_Population_Percentage (strong)
 
-Factor 2:
+Factor 2: (Quality of Life)
 - Family
-- Air_Pollution
-- Alcohol_Consumption_Index
-- Population_Growth_Rate
+- Air_Pollution (strong)
+- Alcohol_Consumption_Index (strong)
+- Population_Growth_Rate (decreasing)
+- Child Mortality (already in FA1)
+- Birth-Rate-Index (already in FA1)
+- Automotive Mortality Index (already in FA1)
 
-Factor 3:
-- Freedom
+As Factor 2 increases,
+- Family decreases
+- Air pollution increases
+- Alcohol consumption decreases
+- ...
+
+The happier the family, the less is the population growth rate and the air pollution. However, the alcohol consumption rises as the happiness grows.
+
+Factor 3: (Freedom)
 - Trust_Government_Curruption
+- Freedom
 
 
+### Plots for Poster
 
+The function "principal" performed bellow substitutes the whole work "manually" done before. ;-)
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+# Varimax Rotated Principal Components
+# retaining 3 components 
+library(psych)
+fit <- principal(selected, nfactors=3, rotate="varimax")
+fit$loadings # print results
+fit$
+
+screeplot(fa.parallel(selected)$fa.values)
+
+biplot(fit)
+
+fa.plot(fit)
+fa.diagram(fit)
+
+fa.parallel(selected)
+fa.parallel(selected)$fa.values #to see the eigenvalues of the rotated PCs (factors)
+
+res.pca$eig = fa.parallel(selected)$fa.values
+
+
+library(FactoMineR)
+res.mfa <- MFA(selected, group = selected)
+
+fviz_screeplot(fit)
+
+```
+
+
+## Quality of Representation (cos2):
+
+Note: High cos2 indicates a good representation, a low one shows the opposite. 
+
+### Of the variables:
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+res.pca <- PCA(selected)
+res.pca$eig
+res.pca$var
+
+#create new table
+eigenvalueFA<-fa.parallel(selected)$fa.values
+perc_explainedFA<-fa.parallel(selected)$fa.values/20
+cum_explainFA<-cumsum(perc_explained)
+table<-cbind(eigenvalueFA,perc_explainedFA,cum_explainFA)
+table
+
+#change Values
+res.pca$eig = table
+res.pca$var
+res.pca$eig
+var <- get_pca_var(res.pca) #variables
+
+corrplot(var$cos2, is.corr=F)
+# Color by cos2 values: quality on the factor map
+fviz_pca_var(res.pca, col.var = "cos2",
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), 
+             repel = TRUE) # Avoid text overlapping
+
+# Total cos2 of variables on PC1 and PC2
+fviz_cos2(res.pca, choice = "var", axes = 1:2) 
+
+```
+
+g <- ggplot(data = perc_explainedFA)
+# Number of cars in each class:
+g + geom_bar()
+
+
+# Simple Bar Plot 
+counts <- perc_explainedFA
+plot <- barplot(counts, main="Car Distribution", 
+  	xlab="perc_explainedFA")
+plot
 
