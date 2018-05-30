@@ -1,20 +1,90 @@
 ---
-title: "World Happiness: A Multivariate Analysis"
+title: 'World Happiness: A Multivariate Analysis'
 author: "Daniel Cooper, Maria Lechleitner, Dahmane Sheikh"
 date: "May 2018"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+# Multivariate Normality Assessment: 
 
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+The first plot is the QQ plot on raw data, while the second one is when applying power transformation, which will be used for further analysis (factor analysis, pca, cluster analysis, predictions,...)
 
-```{r}
-plot(cars)
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+require(dplyr)
+
+#Using local path as cant' use the general path as this issue constantly appear: 
+#cannot open file '../../DATA/full_best_df.csv': No such file or directoryError in file(file, "rt") : cannot open the connection
+
+raw.df <- read.csv("C:/Users/A541U/Desktop/Semester 2/Descriptive R Project/2018_World_Happiness_Multivariate_Analysis/DATA/happiness.csv")
+
+temp_df <- raw.df %>% select(-X,-Country,-Region)
+rownames(temp_df) <- raw.df[1:132,2]
+
+n <- nrow(temp_df); p <- ncol(temp_df)
+
+mean <- colMeans(temp_df)
+cov <- cov(temp_df)
+
+# ordering mahalanobis distances
+d_square <- mahalanobis(temp_df, mean,cov, tol=1e-20)
+d_square <- sort(d_square)
+
+# Generating a vector of quantiles
+quantiles=(1:n-0.5)/n
+x <- qchisq(quantiles,df=p)
+
+# Plot
+
+plot(x, d_square,
+     pch=4, xlim=c(0,max(x)*1.2), ylim=c(0,max(d_square)*1.2),
+     xlab="Chi-squared quantiles",
+     ylab="Mahalanobis distances",
+     main="QQ plot - Assessment of multivariate normality")
+abline(a = 0, b = 1, col="blue")
+text(x,d_square, labels=rownames(temp_df), pos=4,cex=0.7)
+
+rm(cov,d_square,mean,n,p,quantiles,x, temp_df)
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+normalized_df <- read.csv("C:/Users/A541U/Desktop/Semester 2/Descriptive R Project/2018_World_Happiness_Multivariate_Analysis/DATA/full_best_df.csv")
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+normalized_df <- normalized_df %>% select(-X,-Country,-Region)
+
+
+#new df to use for further analysis
+#full_best_df <- cbind(happiness[,2:3],best_df) 
+#write.csv(full_best_df,file="full_best_df.csv")
+
+rownames(normalized_df) <- raw.df[1:132,2]
+
+n <- nrow(normalized_df); p <- ncol(normalized_df)
+mean <- colMeans(normalized_df)
+cov <- cov(normalized_df)
+
+# ordering mahalanobis distances
+d_square <- mahalanobis(normalized_df, mean,cov) # tol=1e-20) is used bc R is detecting singular 
+d_square <- sort(d_square)
+
+# Generating a vector of quantiles
+quantiles=(1:n-0.5)/n
+x <- qchisq(quantiles,df=p)
+
+# Plot
+
+plot(x, d_square,
+     pch=4, xlim=c(0,max(x)*1.2), ylim=c(0,max(d_square)*1.2),
+     xlab="Chi-squared quantiles",
+     ylab="Mahalanobis distances",
+     main="QQ plot with Multivariate Normality")
+abline(a = 0, b = 1, col="blue")
+
+text(x,d_square, labels=rownames(normalized_df), pos=4,cex=0.7)
+
+rm(cov,d_square, mean,n,p,quantiles,x)
+
+
+```

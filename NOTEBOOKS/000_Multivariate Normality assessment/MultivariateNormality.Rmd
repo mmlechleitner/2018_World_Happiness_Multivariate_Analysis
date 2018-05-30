@@ -67,7 +67,7 @@ plot(x, d_square,
      pch=4, xlim=c(0,max(x)*1.2), ylim=c(0,max(d_square)*1.2),
      xlab="Chi-squared quantiles",
      ylab="Mahalanobis distances",
-     main="QQ plot")
+     main="QQ plot - Assessment of multivariate normality")
 abline(a = 0, b = 1, col="blue")
 text(x,d_square, labels=rownames(temp_df), pos=4,cex=0.7)
 
@@ -128,7 +128,7 @@ plot(x, d_square,
      pch=4, xlim=c(0,max(x)*1.2), ylim=c(0,max(d_square)*1.2),
      xlab="Chi-squared quantiles",
      ylab="Mahalanobis distances",
-     main="QQ plot")
+     main="QQ plot with Multivariate Normality")
 abline(a = 0, b = 1, col="blue")
 
 text(x,d_square, labels=rownames(best_df), pos=4,cex=0.7)
