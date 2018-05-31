@@ -148,7 +148,7 @@ fviz_pca_ind(res.pca, col.ind = "cos2",
 dimdesc(res.pca)
 
 ```
-
+ 
 # Linear Regression (Single and Multiple) based on PCA:
 
 Simple Linear Regression using only the 1st Principal Component:
@@ -176,4 +176,71 @@ Multiple Linear Regression with the first 3PCs:
 predictors3pcs <- data.frame(res.pca$ind$coord[,1:3],happiness_score = full_best_df$Happiness_Score)
 fit3pcs <- lm(happiness_score~ Dim.1 + Dim.2 + Dim.3, data=predictors3pcs)
 summary(fit3pcs) #R_Square of 78%
+```
+
+
+# Linear Regression (Single and Multiple) based on FA:
+
+Simple Linear Regression using only the 1st Factor:
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+#Get data
+library(psych)
+FA_Happiness <- principal(selected, nfactors=3, rotate="varimax")
+FA1_Scores <- FA_Happiness$scores[,1]
+HP_Scores <- full_best_df$Happiness_Score
+
+#Regression
+FA1lm <- lm(HP_Scores ~ FA1_Scores) #linear model
+summary(FA1lm) #R_Square of 31% with just PC1
+plot(FA1_Scores, HP_Scores)
+abline(FA1lm)
+#text(res.pca$ind$coord[,1],full_best_df$Happiness_Score, label=full_best_df$Country)
+
+temp_plot <- data.frame(Factor1 = FA1_Scores, Happiness_Score = full_best_df$Happiness_Score)
+
+ggplot(temp_plot, aes(x=Factor1, y=Happiness_Score)) + geom_point() + geom_smooth(method="lm", col="red") +
+  ggtitle(label="Simple Linear Regression",
+  subtitle = labs(title =paste("Adj R2 =",signif(summary(FA1lm)$adj.r.squared, 5),
+                               "Intercept =",signif(FA1lm$coef[[1]],5 ),
+                               " Slope =",signif(FA1lm$coef[[2]], 5),
+                               " P =",signif(summary(FA1lm)$coef[2,4], 5)))) +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust =0.5)) +
+  xlab("1st Factor (Country Development)") + ylab("Happiness Score")
+
+```
+
+
+Simple Linear Regression using 3 Factors:
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+#Get data
+FA_Scores <- FA_Happiness$scores
+dfFAScores <- data.frame(FA_Scores)
+sumScores <- dfFAScores$RC1+dfFAScores$RC2+dfFAScores$RC3
+HP_Scores <- full_best_df$Happiness_Score
+
+#Regression
+predictors3fas <- data.frame(FA_Scores,HP_Scores)
+fit3fas <- lm(HP_Scores~ RC1 + RC2 + RC3, data=predictors3fas)
+summary(fit3fas) #R_Square of 78%
+
+#Plots
+plot(sumScores, HP_Scores)
+abline(fit3fas)
+
+temp_plot <- data.frame(Factors = sumScores, Happiness_Score = full_best_df$Happiness_Score)
+
+#not correct yet!
+ggplot(temp_plot, aes(x=Factors, y=Happiness_Score)) + geom_point() + geom_smooth(method="lm", col="red") +
+  ggtitle(label="Simple Linear Regression",
+  subtitle = labs(title =paste("Adj R2 =",signif(summary(fit3fas)$adj.r.squared, 5),
+                               "Intercept =",signif(fit3fas$coef[[1]],5 ),
+                               " RC1 =",signif(fit3fas$coef[[2]], 5),
+                               " RC2 =",signif(fit3fas$coef[[3]], 5),
+                               " RC3 =",signif(fit3fas$coef[[4]], 5),
+                               " P =",signif(summary(fit3fas)$coef[4,4], 5)))) +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust =0.5)) +
+  xlab("Factors") + ylab("Happiness Score")
+```
 ```
