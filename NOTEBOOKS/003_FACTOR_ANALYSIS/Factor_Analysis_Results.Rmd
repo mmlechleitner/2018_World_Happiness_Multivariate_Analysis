@@ -334,6 +334,7 @@ Factor 3: (Freedom)
 # retaining 3 components 
 library(psych)
 FA_Happiness <- principal(selected, nfactors=3, rotate="varimax")
+FA_Happiness$scores[,1]
 
 ```
 
@@ -381,3 +382,7 @@ ggcorrplot(PCA_Loadings, lab=T, insig ="blank") + coord_flip() + ggtitle("PCA Qu
 biplot(selected, FA_Loadings)
 
 ```
+
+
+
+

@@ -202,7 +202,7 @@ temp_plot <- data.frame(Factor1 = FA1_Scores, Happiness_Score = full_best_df$Hap
 ggplot(temp_plot, aes(x=Factor1, y=Happiness_Score)) + geom_point() + geom_smooth(method="lm", col="red") +
   ggtitle(label="Simple Linear Regression",
   subtitle = labs(title =paste("Adj R2 =",signif(summary(FA1lm)$adj.r.squared, 5),
-                               "Intercept =",signif(FA1lm$coef[[1]],5 ),
+                               " Intercept =",signif(FA1lm$coef[[1]],5 ),
                                " Slope =",signif(FA1lm$coef[[2]], 5),
                                " P =",signif(summary(FA1lm)$coef[2,4], 5)))) +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust =0.5)) +
@@ -238,8 +238,7 @@ ggplot(temp_plot, aes(x=Factors, y=Happiness_Score)) + geom_point() + geom_smoot
                                "Intercept =",signif(fit3fas$coef[[1]],5 ),
                                " RC1 =",signif(fit3fas$coef[[2]], 5),
                                " RC2 =",signif(fit3fas$coef[[3]], 5),
-                               " RC3 =",signif(fit3fas$coef[[4]], 5),
-                               " P =",signif(summary(fit3fas)$coef[4,4], 5)))) +
+                               " RC3 =",signif(fit3fas$coef[[4]], 5)))) +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust =0.5)) +
   xlab("Factors") + ylab("Happiness Score")
 ```
