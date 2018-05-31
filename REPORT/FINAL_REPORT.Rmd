@@ -87,7 +87,7 @@ text(x,d_square, labels=rownames(normalized_df), pos=4,cex=0.7)
 rm(cov,d_square, mean,n,p,quantiles,x, raw.df, normalized_df)
 ```
 
-#Principal Component Analysis:
+# Principal Component Analysis:
 
 Firstly, there is a scree plot. Secondly the corrplot. Finally two biplots of variables and countries, respectively.
 
@@ -149,7 +149,7 @@ dimdesc(res.pca)
 
 ```
 
-#Linear Regression (Single and Multiple) based on PCA:
+# Linear Regression (Single and Multiple) based on PCA:
 
 Simple Linear Regression using only the 1st Principal Component:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
