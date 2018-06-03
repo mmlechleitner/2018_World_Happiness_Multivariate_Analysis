@@ -155,8 +155,8 @@ Simple Linear Regression using only the 1st Principal Component:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 pc1lm <- lm(full_best_df$Happiness_Score ~ res.pca$ind$coord[,1])
 summary(pc1lm) #R_Square of 65% with just PC1
-plot(res.pca$ind$coord[,1],full_best_df$Happiness_Score)
-abline(pc1lm)
+#plot(res.pca$ind$coord[,1],full_best_df$Happiness_Score)
+#abline(pc1lm)
 #text(res.pca$ind$coord[,1],full_best_df$Happiness_Score, label=full_best_df$Country)
 
 temp_plot <- data.frame(pc1 = res.pca$ind$coord[,1], Happiness_Score = full_best_df$Happiness_Score)
