@@ -17,12 +17,11 @@ full_best_df <- read.csv(file = "../../DATA/full_best_df.csv")
 
 temp_df <- full_best_df %>% 
   select(-X,-Country,-Region,-Happiness_Score,
-         -Total_Population,-Mental_and_Substance_Disorder_Index,-Compulsory_Education_in_Years, -Agricultural_Land_Percentage,-Generosity,-Forest_Area_Land_Percentage,
+         -Total_Population,-Mental_and_Substance_Disorder_Index,
+         -Compulsory_Education_in_Years, -Agricultural_Land_Percentage,
+         -Generosity,-Forest_Area_Land_Percentage,
          -Suicide_Index,-Legal_Rights_Index,-Infant_Immunization_Measles_Index)
-```
 
-First, we are calling the PCA function, which gives a first good overview of correlation biplots on PC1 & PC2. First one being about the variables, while second about the countries.
-```{r, echo = TRUE, fig.width=8, fig.height=8}
 res.pca <- PCA(temp_df,graph=F) #Biplot of PC1 and PC2
 print(res.pca)
 ```
@@ -30,10 +29,10 @@ print(res.pca)
 Scree Plot shows the percentage of explained variance per principal component.
 Secondly the contribution of each variable to each component. 
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
-#fviz_eig(res.pca, addlabels=TRUE) #Scree plot
-dimdesc(res.pca) #Easier way to see the contribution of each component's variables
+# Contribution of variables to each Principal Components:
+dimdesc(res.pca) 
 
-#Better visualization of the scree plot with ggplot
+#Scree plot of the explained variance of the first 5 Principal Components:
 xaxis <- 1:10; eig <- data.frame(res.pca$eig); eig <- eig[1:10,]
 temp_for_plot <- data.frame(eig,xaxis)
 
@@ -48,8 +47,8 @@ ggplot(data=temp_for_plot, aes(x=factor(xaxis), y=percentage.of.variance)) +
              angle = 90) +
   annotate(geom = "text", x = 2, y = 20, label = "<---- Air Pollution & Alcohol", color = "black",angle = 90) +
     annotate(geom = "text", x = 3, y = 20, label = "<---- Freedom & Corruption", color = "black",angle = 90)
-#res.pca$var$coord #Best way to compare contribution of each variable across several PCs
-#res.pca$ind$coord  #Contribution of each country to the PCs
+
+ggcorrplot(res.pca$var$cos2, lab=T, insig ="blank") + coord_flip() + ggtitle("Quality of Representation per Dimension")
 ```
 
 Extract the results for variables and individuals, respectively:
@@ -223,12 +222,18 @@ summary(fitfirstthirdpcs)
 
 Split df into training and validation:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
+
+selection_df <- full_best_df %>% 
+  select(-X,-Country,-Region)
+
 #Split data into training and validation samples 
 set.seed(2018)
 train.size <- 0.5
 train.index <- sample.int(length(full_best_df$Happiness_Score),round(length(full_best_df$Happiness_Score) * train.size))
 train.sample <- selection_df[train.index,]
 validation.sample <- selection_df[-train.index,]
+
+rm(train.index, train.size)
 ```
 
 # Regression Trees - CART on Happiness_Score:
@@ -237,7 +242,17 @@ validation.sample <- selection_df[-train.index,]
 require(rpart)
 require(rpart.plot)
 
-m1 <-rpart(Happiness_Score~ ., data=train.sample, method= "anova")
+fit <-rpart(Happiness_Score~ ., data=train.sample, method= "anova")
+printcp(fit) #Display the results
+plotcp(fit)  #Visualize cross-validation results
+summary(fit) #detailed summary of splits 
+
+#create additional plot
+par(mfrow=c(1,2))
+rsq.rpart(fit)
+
+
+
 m1
 rpart.plot(m1, type=3)
 
