@@ -17,7 +17,7 @@ require(dplyr)
 #Using local path as cant' use the general path as this issue constantly appear: 
 #cannot open file '../../DATA/full_best_df.csv': No such file or directoryError in file(file, "rt") : cannot open the connection
 
-raw.df <- read.csv("C:/Users/A541U/Desktop/Semester 2/Descriptive R Project/2018_World_Happiness_Multivariate_Analysis/DATA/happiness.csv")
+raw.df <- read.csv("C:\\Users\\mmlec\\Desktop\\2018_World_Happiness_Multivariate_Analysis\\DATA\\happiness.csv")
 
 temp_df <- raw.df %>% select(-X,-Country,-Region)
 rownames(temp_df) <- raw.df[1:132,2]
@@ -50,7 +50,7 @@ rm(cov,d_square,mean,n,p,quantiles,x, temp_df)
 
 
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
-normalized_df <- read.csv("C:/Users/A541U/Desktop/Semester 2/Descriptive R Project/2018_World_Happiness_Multivariate_Analysis/DATA/full_best_df.csv")
+normalized_df <- read.csv("C:\\Users\\mmlec\\Desktop\\2018_World_Happiness_Multivariate_Analysis\\DATA\\full_best_df.csv")
 
 normalized_df <- normalized_df %>% select(-X,-Country,-Region)
 
@@ -98,7 +98,7 @@ require(ggcorrplot);require(ggplot2)
 # full_best_df <- read.csv(file = "../../DATA/full_best_df.csv")
 # this command yields this error: Error in file(file, "rt") : cannot open the connection
 
-full_best_df <- read.csv("C:/Users/A541U/Desktop/Semester 2/Descriptive R Project/2018_World_Happiness_Multivariate_Analysis/DATA/happiness.csv")
+full_best_df <- read.csv("C:\\Users\\mmlec\\Desktop\\2018_World_Happiness_Multivariate_Analysis\\DATA\\happiness.csv")
 
 #row.names(full_best_df) <- full_best_df$Country
 
@@ -178,6 +178,7 @@ fit3pcs <- lm(happiness_score~ Dim.1 + Dim.2 + Dim.3, data=predictors3pcs)
 summary(fit3pcs) #R_Square of 78%
 ```
 
+<<<<<<< HEAD
 
 # Linear Regression (Single and Multiple) based on FA:
 
@@ -243,3 +244,29 @@ ggplot(temp_plot, aes(x=Factors, y=Happiness_Score)) + geom_point() + geom_smoot
   xlab("Factors") + ylab("Happiness Score")
 ```
 ```
+=======
+# Feature selection:
+Recursive Feature Elimination from caret package. It uses a random forest algo on each iteration to evaluate the model to explore all possible subsets of attributes. It comes out with a set of attributes that can be use to build an accurate model:
+
+In this case, we have 5 interesting features with a R-square of 78%
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+require(caret); require(mlbench); require(randomForest)
+
+selection_df <- full_best_df %>% select(-X,-Country,-Region)
+
+control <- rfeControl(functions=rfFuncs, method="cv", number=10)
+results <- rfe(selection_df[,2:29], selection_df[,1], sizes=c(2:29), rfeControl=control)
+print(results)
+predictors(results)
+plot(results,type=c("g","o"))
+
+lmtest <- lm(Happiness_Score~ Econonmy_GDP_Per_Capita + Family + Freedom + 
+               Internet_Usage_Index + Health_Life_Expectancy, data= selection_df)
+summary(lmtest) #R_Square of 78% 
+
+
+```
+
+
+
+>>>>>>> da79f5a0412b37150e78900df78758c63f58bd55
