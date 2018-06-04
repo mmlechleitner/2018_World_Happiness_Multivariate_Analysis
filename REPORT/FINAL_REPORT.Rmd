@@ -17,7 +17,7 @@ require(dplyr)
 #Using local path as cant' use the general path as this issue constantly appear: 
 #cannot open file '../../DATA/full_best_df.csv': No such file or directoryError in file(file, "rt") : cannot open the connection
 
-raw.df <- read.csv("C:/Users/A541U/Desktop/Semester 2/Descriptive R Project/2018_World_Happiness_Multivariate_Analysis/DATA/happiness.csv")
+raw.df <- read.csv("C:/Users/A541U/Desktop/Semester 2/2. Descriptive R Project/2018_World_Happiness_Multivariate_Analysis/DATA/happiness.csv")
 
 temp_df <- raw.df %>% select(-X,-Country,-Region)
 rownames(temp_df) <- raw.df[1:132,2]
@@ -50,7 +50,7 @@ rm(cov,d_square,mean,n,p,quantiles,x, temp_df)
 
 
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
-normalized_df <- read.csv("C:/Users/A541U/Desktop/Semester 2/Descriptive R Project/2018_World_Happiness_Multivariate_Analysis/DATA/full_best_df.csv")
+normalized_df <- read.csv("C:/Users/A541U/Desktop/Semester 2/2. Descriptive R Project/2018_World_Happiness_Multivariate_Analysis/DATA/full_best_df.csv")
 
 normalized_df <- normalized_df %>% select(-X,-Country,-Region)
 
@@ -89,8 +89,10 @@ rm(cov,d_square, mean,n,p,quantiles,x, raw.df, normalized_df)
 
 # Principal Component Analysis:
 
-Firstly, there is a scree plot. Secondly the corrplot. Finally two biplots of variables and countries, respectively.
+Based on the correlation matrix, we can see that some variables have a weak to no correlation at all with the Happiness_Score and thus can be easily removed before PCA Analysis: (11 vars.)
 
+
+Subseting the original dataset and calling the PCA function:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 require(dplyr);require(FactoMineR);require(factoextra)
 require(ggcorrplot);require(ggplot2)
@@ -98,18 +100,22 @@ require(ggcorrplot);require(ggplot2)
 # full_best_df <- read.csv(file = "../../DATA/full_best_df.csv")
 # this command yields this error: Error in file(file, "rt") : cannot open the connection
 
-full_best_df <- read.csv("C:/Users/A541U/Desktop/Semester 2/Descriptive R Project/2018_World_Happiness_Multivariate_Analysis/DATA/happiness.csv")
+full_best_df <- read.csv("C:/Users/A541U/Desktop/Semester 2/2. Descriptive R Project/2018_World_Happiness_Multivariate_Analysis/DATA/happiness.csv")
 
 #row.names(full_best_df) <- full_best_df$Country
 
-temp_df <- full_best_df %>% 
-  select(-X,-Country,-Region,-Happiness_Score,
-         -Total_Population,-Mental_and_Substance_Disorder_Index,-Compulsory_Education_in_Years, -Agricultural_Land_Percentage,-Generosity,-Forest_Area_Land_Percentage,
-         -Suicide_Index,-Legal_Rights_Index,-Infant_Immunization_Measles_Index, -HIV_Disease_Index, -Alcohol_Consumption_Index)
+temp_df <- full_best_df %>% select(
+  -X,-Country,-Region,-Happiness_Score,-Generosity,-Total_Population,
+  -Mental_and_Substance_Disorder_Index,-Alcohol_Consumption_Index,-Suicide_Index,
+  -Population_Growth_Rate,-HIV_Disease_Index,-Compulsory_Education_in_Years,
+  -Agricultural_Land_Percentage,-Forest_Area_Land_Percentage,-Legal_Rights_Index)
 
-res.pca <- PCA(temp_df,graph=F) #PCA Function
+res.pca <- PCA(temp_df,graph=F)#PCA Function
+
+#temp_df <- full_best_df %>% select(-X,-Country,-Region,-Happiness_Score,         -Total_Population,-Mental_and_Substance_Disorder_Index,-Compulsory_Education_in_Years, -Agricultural_Land_Percentage,-Generosity,-Forest_Area_Land_Percentage,         -Suicide_Index,-Legal_Rights_Index,-Infant_Immunization_Measles_Index, -HIV_Disease_Index, -Alcohol_Consumption_Index)
 ```
 
+Scree plot + Correlation plot of the principal components:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 xaxis <- 1:10; eig <- data.frame(res.pca$eig); eig <- eig[1:10,]
 temp_for_plot <- data.frame(eig,xaxis)
@@ -121,22 +127,27 @@ ggplot(data=temp_for_plot, aes(x=factor(xaxis), y=percentage.of.variance)) +
   geom_text(aes(label= paste0(temp_for_plot$percentage.of.variance, "%")), vjust=-0.3) +
   theme_minimal() + xlab("Dimensions") + ylab("Percentage of explained variances")+
   ggtitle("Scree Plot for PCA")+ theme(plot.title = element_text(hjust = 0.5)) +
-  annotate(geom = "text", x = 1, y = 21, label = "Country Development", color = "black",
+  annotate(geom = "text", x = 1, y = 23, label = "Country Development", color = "black",
              angle = 90) +
-  annotate(geom = "text", x = 2, y = 20, label = "<---- Air Pollution & Alcohol", color = "black",angle = 90) +
-    annotate(geom = "text", x = 3, y = 20, label = "<---- Freedom & Corruption", color = "black",angle = 90)
+  annotate(geom = "text", x = 2, y = 23, label = "<---- Freedom&Government trust", color = "black",angle = 90) +
+    annotate(geom = "text", x = 3, y = 23, label = "<---- Air Pollution", color = "black",angle = 90)
 
-ggcorrplot(res.pca$var$cos2, lab=T, insig ="blank") + coord_flip() + ggtitle("Quality of Representation per Dimension")
+ggcorrplot(res.pca$var$coord[,1:3], lab=T, insig ="blank") + coord_flip() + ggtitle("Quality of Representation per Dimension")
+#dimdesc(res.pca)
+
+#ggcorrplot(res.pca$var$cos2, lab=T, insig ="blank") + coord_flip() + ggtitle("Quality of Representation per Dimension")
 
 rm(eig,temp_for_plot,xaxis,temp_df)
-
 ```
 
+Biplot of PC1 and PC2 on the variables and countries, respectively:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 # Color by cos2 values: quality on the factor map
+
 fviz_pca_var(res.pca, col.var = "cos2",
-             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), 
+             gradient.cols = c("black","blue","red"), 
              repel = TRUE) # Avoid text overlapping
+
 
 row.names(res.pca$ind$coord) <- full_best_df$Country
 
@@ -144,10 +155,39 @@ row.names(res.pca$ind$coord) <- full_best_df$Country
 fviz_pca_ind(res.pca, col.ind = "cos2", 
              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
              repel = TRUE) # Avoid text overlapping (slow if many points)
+```
 
-dimdesc(res.pca)
+Demonstration that the 2pcs (their variables) do have a classification effect on the happiness_score:
+
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+var <- get_pca_var(res.pca) #variables
+ind <- get_pca_ind(res.pca) #individuals
+
+target_Factorised <- full_best_df
+target_Factorised$Happiness_Score <- cut(target_Factorised$Happiness_Score,breaks=5)
+
+require(plyr)
+target_Factorised$Happiness_Score <- revalue(target_Factorised$Happiness_Score, c("(-2.44,-1.46]"= "Not Happy At All", "(-1.46,-0.486]" = "Not Really Happy", "(-0.486,0.486]" = "+/- Happy", "(0.486,1.46]" = "Happy",  "(1.46,2.44]" = "Really Happy"))
+
+require(ggpubr)
+ind.p <- fviz_pca_ind(res.pca,
+             geom.ind = "text", # show points only (nbut not "text")
+             col.ind = target_Factorised$Happiness_Score, # color by groups
+             palette = c("#00AFBB", "#E7B800", "#FC4E07", "blue","purple","red"),
+             addEllipses = T, # Concentration ellipses
+             ellipse.type= "euclid",
+             ellipse.level= 0.50,
+             repel=TRUE)
+
+ggpubr::ggpar(ind.p,
+              title = "Principal Component Analysis",
+              subtitle = "Grouping by Happiness Score",
+              caption = "Ellipse represented by the euclidean distance from the center",
+              xlab = "PC1", ylab = "PC2",
+              legend.title = "Happiness Group", legend.position = "top")
 
 ```
+
 
 # Linear Regression (Single and Multiple) based on PCA:
 
@@ -155,6 +195,8 @@ Simple Linear Regression using only the 1st Principal Component:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 pc1lm <- lm(full_best_df$Happiness_Score ~ res.pca$ind$coord[,1])
 summary(pc1lm) #R_Square of 65% with just PC1
+par(mfrow=c(2,2)) # init 4 charts in 1 panel
+plot(pc1lm)
 #plot(res.pca$ind$coord[,1],full_best_df$Happiness_Score)
 #abline(pc1lm)
 #text(res.pca$ind$coord[,1],full_best_df$Happiness_Score, label=full_best_df$Country)
@@ -169,6 +211,29 @@ ggplot(temp_plot, aes(x=pc1, y=Happiness_Score)) + geom_point() + geom_smooth(me
                                " P =",signif(summary(pc1lm)$coef[2,4], 5)))) +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust =0.5)) +
   xlab("1st Principal Component (Country Development)") + ylab("Happiness_Score")
+
+
+#Heteroskedacticity??
+
+new <- data.frame(Happiness_Score = full_best_df$Happiness_Score, res.pca$ind$coord[,1:3])
+
+hap.ols <- lm(Happiness_Score ~ Dim.1, data = new)
+new$resi <- hap.ols$residuals
+library(ggplot2)
+ggplot(data = new, aes(y = resi, x = Dim.1)) + geom_point(col = 'blue') + geom_abline(slope = 0)
+
+require(e1071)
+
+distBCMod <- caret::BoxCoxTrans(new$Happiness_Score)
+print(distBCMod)
+
+require(lmtest)
+
+new <- cbind(new, happiness_new=predict(distBCMod, new$Happiness_Score))
+lmMod_bc <- lm(happiness_new ~ Dim.1, data=new)
+bptest(lmMod_bc)
+plot(lmMod_bc)
+
 ```
 
 Multiple Linear Regression with the first 3PCs:
@@ -183,7 +248,7 @@ Recursive Feature Elimination from caret package. It uses a random forest algo o
 
 In this case, we have 5 interesting features with a R-square of 78%
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
-require(caret); require(mlbench); require(randomForest)
+require(caret); require(mlbench); require(randomForest); require(dplyr)
 
 selection_df <- full_best_df %>% select(-X,-Country,-Region)
 
@@ -196,6 +261,14 @@ plot(results,type=c("g","o"))
 lmtest <- lm(Happiness_Score~ Econonmy_GDP_Per_Capita + Family + Freedom + 
                Internet_Usage_Index + Health_Life_Expectancy, data= selection_df)
 summary(lmtest) #R_Square of 78% 
+plot(lmtest)
+
+require(MASS)
+rlmtest <- rlm(Happiness_Score~ Econonmy_GDP_Per_Capita + Family + Freedom + 
+               Internet_Usage_Index + Health_Life_Expectancy, data= selection_df)
+
+summary(rlmtest)
+plot(rlmtest)
 
 
 ```
