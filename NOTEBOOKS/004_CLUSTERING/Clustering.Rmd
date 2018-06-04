@@ -37,19 +37,10 @@ rownames(world_happiness_df) <- world_happiness_df$Country
 # Subset Data:
 cluster_df <- world_happiness_df %>% 
   select(
-       -X
-      ,-Country
-      ,-Region
-      ,-Happiness_Score
-      ,-Total_Population
-      ,-Mental_and_Substance_Disorder_Index
-      ,-Compulsory_Education_in_Years
-      ,-Agricultural_Land_Percentage
-      ,-Generosity
-      ,-Forest_Area_Land_Percentage
-      ,-Suicide_Index
-      ,-Legal_Rights_Index
-    )
+  -X,-Country,-Region,-Happiness_Score,-Generosity,-Total_Population,
+  -Mental_and_Substance_Disorder_Index,-Alcohol_Consumption_Index,-Suicide_Index,
+  -Population_Growth_Rate,-HIV_Disease_Index,-Compulsory_Education_in_Years,
+  -Agricultural_Land_Percentage,-Forest_Area_Land_Percentage,-Legal_Rights_Index)
 
 ```
 
@@ -106,7 +97,7 @@ fviz_nbclust(cluster_df, kmeans, nstart = 25,  method = "gap_stat", nboot = 500,
 
 ```{r}
 set.seed(24286)
-km.res <- kmeans(cluster_df, 7, nstart = 25)
+km.res <- kmeans(cluster_df, 3, nstart = 25)
 # Visualize
 library("factoextra")
 fviz_cluster(km.res, data = cluster_df,
@@ -152,9 +143,9 @@ hc_res <- cluster_df %>%
   hclust(method = "ward.D2")
 
 # Cut tree into 4 groups
-grp <- cutree(hc_res, k = 4)
+grp <- cutree(hc_res, k = 3)
 
-fviz_dend(hc_res, k = 4, # Cut in four groups
+fviz_dend(hc_res, k = 5, # Cut in four groups
           cex = 0.5, # label size
           k_colors = c("#2E9FDF", "#00AFBB", "#E7B800", "#FC4E07"),
           color_labels_by_k = TRUE, # color labels by groups
@@ -170,11 +161,11 @@ fviz_cluster(list(data = cluster_df, cluster = grp),
              show.clust.cent = FALSE, ggtheme = theme_minimal())
 
 # Visualize in Circular manner:
-fviz_dend(hc_res, cex = 0.5, k = 4, 
+fviz_dend(hc_res, cex = 0.5, k = 3, 
           k_colors = "jco", type = "circular")
 
 # Visualize in Phylogenic manner: 
-fviz_dend(hc_res, k = 4, # Cut in four groups
+fviz_dend(hc_res, k = 5, # Cut in four groups
           k_colors = "jco",
           type = "phylogenic", repel = TRUE,
           phylo_layout = "layout.gem")
