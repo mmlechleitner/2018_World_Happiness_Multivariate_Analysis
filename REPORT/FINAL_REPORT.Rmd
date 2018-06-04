@@ -17,11 +17,7 @@ require(dplyr)
 #Using local path as cant' use the general path as this issue constantly appear: 
 #cannot open file '../../DATA/full_best_df.csv': No such file or directoryError in file(file, "rt") : cannot open the connection
 
-<<<<<<< HEAD
-raw.df <- read.csv("C:\\Users\\mmlec\\Desktop\\2018_World_Happiness_Multivariate_Analysis\\DATA\\happiness.csv")
-=======
 raw.df <- read.csv("C:/Users/A541U/Desktop/Semester 2/2. Descriptive R Project/2018_World_Happiness_Multivariate_Analysis/DATA/happiness.csv")
->>>>>>> a7845f399b61b8e2f8651c3ba7e1b2a3b10e5d66
 
 temp_df <- raw.df %>% select(-X,-Country,-Region)
 rownames(temp_df) <- raw.df[1:132,2]
@@ -54,11 +50,7 @@ rm(cov,d_square,mean,n,p,quantiles,x, temp_df)
 
 
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
-<<<<<<< HEAD
-normalized_df <- read.csv("C:\\Users\\mmlec\\Desktop\\2018_World_Happiness_Multivariate_Analysis\\DATA\\full_best_df.csv")
-=======
 normalized_df <- read.csv("C:/Users/A541U/Desktop/Semester 2/2. Descriptive R Project/2018_World_Happiness_Multivariate_Analysis/DATA/full_best_df.csv")
->>>>>>> a7845f399b61b8e2f8651c3ba7e1b2a3b10e5d66
 
 normalized_df <- normalized_df %>% select(-X,-Country,-Region)
 
@@ -108,11 +100,7 @@ require(ggcorrplot);require(ggplot2)
 # full_best_df <- read.csv(file = "../../DATA/full_best_df.csv")
 # this command yields this error: Error in file(file, "rt") : cannot open the connection
 
-<<<<<<< HEAD
-full_best_df <- read.csv("C:\\Users\\mmlec\\Desktop\\2018_World_Happiness_Multivariate_Analysis\\DATA\\happiness.csv")
-=======
-full_best_df <- read.csv("C:/Users/A541U/Desktop/Semester 2/2. Descriptive R Project/2018_World_Happiness_Multivariate_Analysis/DATA/happiness.csv")
->>>>>>> a7845f399b61b8e2f8651c3ba7e1b2a3b10e5d66
+full_best_df <- read.csv("C:/Users/A541U/Desktop/Semester 2/2. Descriptive R Project/2018_World_Happiness_Multivariate_Analysis/DATA/full_best_df.csv")
 
 #row.names(full_best_df) <- full_best_df$Country
 
@@ -199,12 +187,8 @@ ggpubr::ggpar(ind.p,
               legend.title = "Happiness Group", legend.position = "top")
 
 ```
-<<<<<<< HEAD
- 
-=======
 
 
->>>>>>> a7845f399b61b8e2f8651c3ba7e1b2a3b10e5d66
 # Linear Regression (Single and Multiple) based on PCA:
 
 Simple Linear Regression using only the 1st Principal Component:
@@ -259,73 +243,30 @@ fit3pcs <- lm(happiness_score~ Dim.1 + Dim.2 + Dim.3, data=predictors3pcs)
 summary(fit3pcs) #R_Square of 78%
 ```
 
-<<<<<<< HEAD
-
-# Linear Regression (Single and Multiple) based on FA:
-
-Simple Linear Regression using only the 1st Factor:
+Regression Decision Tree:
 
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
-#Get data
-library(psych)
-FA_Happiness <- principal(selected, nfactors=3, rotate="varimax")
-FA1_Scores <- FA_Happiness$scores[,1]
-HP_Scores <- full_best_df$Happiness_Score
 
-#Regression
-FA1lm <- lm(HP_Scores ~ FA1_Scores) #linear model
-summary(FA1lm) #R_Square of 31% with just PC1
-plot(FA1_Scores, HP_Scores)
-abline(FA1lm)
-#text(res.pca$ind$coord[,1],full_best_df$Happiness_Score, label=full_best_df$Country)
+dt_temp <- full_best_df %>% select(-X,-Country,-Region)
 
-temp_plot <- data.frame(Factor1 = FA1_Scores, Happiness_Score = full_best_df$Happiness_Score)
+library(rpart)
+library(rpart.plot)
 
-ggplot(temp_plot, aes(x=Factor1, y=Happiness_Score)) + geom_point() + geom_smooth(method="lm", col="red") +
-  ggtitle(label="Simple Linear Regression",
-  subtitle = labs(title =paste("Adj R2 =",signif(summary(FA1lm)$adj.r.squared, 5),
-                               " Intercept =",signif(FA1lm$coef[[1]],5 ),
-                               " Slope =",signif(FA1lm$coef[[2]], 5),
-                               " P =",signif(summary(FA1lm)$coef[2,4], 5)))) +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust =0.5)) +
-  xlab("1st Factor (Country Development)") + ylab("Happiness Score")
+m1 <- rpart(Happiness_Score~., method="anova", data=dt_temp)
+m1
+rpart.plot(m1, type=3, digits=3, fallen.leaves=T)
+
+
+dt_target_Factorised <- full_best_df
+dt_target_Factorised$Happiness_Score <- cut(dt_target_Factorised$Happiness_Score,breaks=5)
+require(plyr)
+dt_target_Factorised$Happiness_Score <- revalue(dt_target_Factorised$Happiness_Score, c("(-2.44,-1.46]"= "Not Happy At All", "(-1.46,-0.486]" = "Not Really Happy", "(-0.486,0.486]" = "+/- Happy", "(0.486,1.46]" = "Happy",  "(1.46,2.44]" = "Really Happy"))
+
+m2 <- rpart(Happiness_Score~., method="class", data=dt_target_Factorised)
+rpart.plot(m2, type=3, digits=3, fallen.leaves=T)
 
 ```
 
-
-Simple Linear Regression using 3 Factors:
-
-```{r, echo = TRUE, fig.width=8, fig.height=8}
-#Get data
-FA_Scores <- FA_Happiness$scores
-dfFAScores <- data.frame(FA_Scores)
-sumScores <- dfFAScores$RC1+dfFAScores$RC2+dfFAScores$RC3
-HP_Scores <- full_best_df$Happiness_Score
-
-#Regression
-predictors3fas <- data.frame(FA_Scores,HP_Scores)
-fit3fas <- lm(HP_Scores~ RC1 + RC2 + RC3, data=predictors3fas)
-summary(fit3fas) #R_Square of 78%
-
-#Plots
-plot(sumScores, HP_Scores)
-abline(fit3fas)
-
-temp_plot <- data.frame(Factors = sumScores, Happiness_Score = full_best_df$Happiness_Score)
-
-#not correct yet!
-ggplot(temp_plot, aes(x=Factors, y=Happiness_Score)) + geom_point() + geom_smooth(method="lm", col="red") +
-  ggtitle(label="Simple Linear Regression",
-  subtitle = labs(title =paste("Adj R2 =",signif(summary(fit3fas)$adj.r.squared, 5),
-                               "Intercept =",signif(fit3fas$coef[[1]],5 ),
-                               " RC1 =",signif(fit3fas$coef[[2]], 5),
-                               " RC2 =",signif(fit3fas$coef[[3]], 5),
-                               " RC3 =",signif(fit3fas$coef[[4]], 5)))) +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust =0.5)) +
-  xlab("Factors") + ylab("Happiness Score")
-```
-```
-=======
 # Feature selection:
 Recursive Feature Elimination from caret package. It uses a random forest algo on each iteration to evaluate the model to explore all possible subsets of attributes. It comes out with a set of attributes that can be use to build an accurate model:
 
@@ -356,6 +297,34 @@ plot(rlmtest)
 
 ```
 
+# Cluster Analysis:
 
+```{r, echo = TRUE, fig.width=8, fig.height=8}
+require(dplyr)
 
->>>>>>> da79f5a0412b37150e78900df78758c63f58bd55
+full_best_df <- read.csv("C:/Users/A541U/Desktop/Semester 2/2. Descriptive R Project/2018_World_Happiness_Multivariate_Analysis/DATA/full_best_df.csv")
+
+#row.names(full_best_df) <- full_best_df$Country
+
+cluster_df <- full_best_df %>% select(
+  -X,-Country,-Region,-Generosity,-Total_Population,
+  -Mental_and_Substance_Disorder_Index,-Alcohol_Consumption_Index,-Suicide_Index,
+  -Population_Growth_Rate,-HIV_Disease_Index,-Compulsory_Education_in_Years,
+  -Agricultural_Land_Percentage,-Forest_Area_Land_Percentage,-Legal_Rights_Index)
+
+k.means.fit <- kmeans(cluster_df, 5) # k = 5
+#attributes(k.means.fit)
+
+library(cluster)
+clusplot(cluster_df, k.means.fit$cluster, main='2D representation of the Cluster solution',
+         color=TRUE, shade=TRUE,
+         labels=2, lines=0)
+
+clusplot(cluster_df, target_Factorised$Happiness_Score, main='2D representation of the Cluster solution',
+         color=TRUE, shade=TRUE,
+         labels=2, lines=0)
+
+library(fpc)
+plotcluster(cluster_df, k.means.fit$cluster)
+
+```
