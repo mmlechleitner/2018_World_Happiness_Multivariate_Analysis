@@ -199,51 +199,36 @@ ggpubr::ggpar(ind.p,
 
 # Linear Regression (Single and Multiple) based on PCA:
 
-Quick test for heteroskedasticity:
+Simple Linear Regression using only the 1st Principal Component:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 require(lmtest)
-#results when not doing any transformation:
+
 pc1lm <- lm(full_best_df$Happiness_Score ~ res.pca$ind$coord[,1])
 summary(pc1lm) #R_Square of 65% with just PC1
 par(mfrow=c(2,2)) # init 4 charts in 1 panel
 plot(pc1lm)
 bptest(pc1lm)
-#plot(res.pca$ind$coord[,1],full_best_df$Happiness_Score)
-#abline(pc1lm)
-#text(res.pca$ind$coord[,1],full_best_df$Happiness_Score, label=full_best_df$Country)
-
-#results after modification:
-sub <- data.frame(Happiness_Score = full_best_df$Happiness_Score, dim1= res.pca$ind$coord[,1])
-sub$Happiness_Score <- sub$Happiness_Score + 3
-
-distBCMod <- caret::BoxCoxTrans(sub$Happiness_Score)
-print(distBCMod)
-sub <- cbind(sub, happy_new=predict(distBCMod, sub$Happiness_Score)) # append the transformed variable to cars
-lmMod_bc <- lm(happy_new ~ dim1, data=sub)
-bptest(lmMod_bc)
-plot(lmMod_bc)
-```
-
-Simple Linear Regression using only the 1st Principal Component:
-```{r, echo = TRUE, fig.width=8, fig.height=8}
 
 temp_plot <- data.frame(pc1 = res.pca$ind$coord[,1], Happiness_Score = full_best_df$Happiness_Score)
 
 ggplot(temp_plot, aes(x=pc1, y=Happiness_Score)) + geom_point() + geom_smooth(method="lm", col="red") +
   ggtitle(label="Simple Linear Regression",
   subtitle = labs(title =paste("Adj R2 =",signif(summary(pc1lm)$adj.r.squared, 5),
-                               "Intercept =",signif(pc1lm$coef[[1]],5 ),
+                               " Intercept =",signif(pc1lm$coef[[1]],5 ),
                                " Slope =",signif(pc1lm$coef[[2]], 5),
                                " P =",signif(summary(pc1lm)$coef[2,4], 5)))) +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust =0.5)) +
-  xlab("1st Principal Component (Country Development)") + ylab("Happiness_Score")
+  xlab("1st Principal Component (Country Development)") + ylab("Happiness_Score") +
+  theme(axis.text = element_text(size=12), axis.title = element_text(size=14, face="bold"))+
+  theme(plot.title = element_text(hjust = 0.5))
 ```
 
 Multiple Linear Regression with the first 3PCs:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 predictors3pcs <- data.frame(res.pca$ind$coord[,1:3],happiness_score = full_best_df$Happiness_Score)
-fit3pcs <- lm(happiness_score~ Dim.1 + Dim.2 + Dim.3, data=predictors3pcs)
+fit3pcs <- lm(happiness_score~ Dim.1 + Dim.2, data=predictors3pcs)
 summary(fit3pcs) #R_Square of 78%
+plot(fit3pcs)
 ```
 
 Regression Decision Tree:
@@ -289,6 +274,8 @@ lmtest <- lm(Happiness_Score~ Econonmy_GDP_Per_Capita + Family + Freedom +
                Internet_Usage_Index + Health_Life_Expectancy, data= selection_df)
 summary(lmtest) #R_Square of 78% 
 plot(lmtest)
+
+importance <- varImp(results, scale=F)
 
 require(MASS)
 rlmtest <- rlm(Happiness_Score~ Econonmy_GDP_Per_Capita + Family + Freedom + 
