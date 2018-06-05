@@ -17,7 +17,7 @@ require(dplyr)
 #Using local path as cant' use the general path as this issue constantly appear: 
 #cannot open file '../../DATA/full_best_df.csv': No such file or directoryError in file(file, "rt") : cannot open the connection
 
-raw.df <- read.csv("C:/Users/A541U/Desktop/Semester 2/2. Descriptive R Project/2018_World_Happiness_Multivariate_Analysis/DATA/happiness.csv")
+raw.df <- read.csv("C:\\Users\\mmlec\\Desktop\\2018_World_Happiness_Multivariate_Analysis\\DATA\\happiness.csv")
 
 temp_df <- raw.df %>% select(-X,-Country,-Region)
 rownames(temp_df) <- raw.df[1:132,2]
@@ -99,7 +99,7 @@ require(ggcorrplot);require(ggplot2)
 # full_best_df <- read.csv(file = "../../DATA/full_best_df.csv")
 # this command yields this error: Error in file(file, "rt") : cannot open the connection
 
-full_best_df <- read.csv("C:\\Users\\A541U\\Desktop\\Semester 2\\2. Descriptive R Project\\2018_World_Happiness_Multivariate_Analysis\\DATA\\full_best_df.csv")
+full_best_df <- read.csv("C:\\Users\\mmlec\\Desktop\\2018_World_Happiness_Multivariate_Analysis\\DATA\\full_best_df.csv")
 
 #row.names(full_best_df) <- full_best_df$Country
 

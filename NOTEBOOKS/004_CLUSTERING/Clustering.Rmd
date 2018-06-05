@@ -227,6 +227,7 @@ res.pca$var
 # Compute hierarchical clustering on principal components
 res.hcpc <- HCPC(res.pca, graph = FALSE)
 
+
 fviz_dend(res.hcpc, 
           cex = 0.7,                     # Label size
           palette = "jco",               # Color palette see ?ggpubr::ggpar

@@ -1,3 +1,6 @@
+#read.csv("C:\\Users\\mmlec\\Desktop\\2018_World_Happiness_Multivariate_Analysis\\DATA\\happiness.csv")
+
+
 ### Feature selection for 10 best:
 #Recursive Feature Elimination from caret package. It uses a random forest algo on each iteration to evaluate the model to explore all possible subsets of attributes. It comes out with a set of attributes that can be use to build an accurate model:
   
@@ -26,6 +29,15 @@ rlmtest <- rlm(Happiness_Score~ Family + Mental_and_Substance_Disorder_Index +
 
 summary(rlmtest)
 plot(rlmtest)
+
+# estimate variable importance
+importance <- varImp(lmtest, scale=FALSE)
+
+# summarize importance
+print(importance)
+
+# plot importance
+plot(importance)
 
 
 ### Feature selection for 10 worst:
@@ -56,3 +68,41 @@ rlmtest <- rlm(Happiness_Score~ Family + Mental_and_Substance_Disorder_Index +
 
 summary(rlmtest)
 plot(rlmtest)
+
+
+
+#----------------------------------------------------------------------------------------------------
+# Variable Importance
+#----------------------------------------------------------------------------------------------------
+
+# ensure results are repeatable
+set.seed(7)
+
+# load the library
+library(mlbench)
+library(caret)
+
+trainingset <- full_best_df %>% select(-X,-Country,-Region)
+
+# prepare training scheme
+control <- trainControl(method="repeatedcv", number=2, repeats=1)
+
+# train the model
+model <- train(x=trainingset[,2:29], y=trainingset[,2], method="ANFIS", trControl=control)
+
+# estimate variable importance
+importance <- varImp(model, scale=FALSE)
+
+# summarize importance
+print(importance)
+
+# plot importance
+plot(importance)
+
+require(ggplot2)
+
+ggplot(importance,)
+
+
+
+
