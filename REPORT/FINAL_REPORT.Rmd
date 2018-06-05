@@ -41,7 +41,7 @@ plot(x, d_square,
      pch=4, xlim=c(0,max(x)*1.2), ylim=c(0,max(d_square)*1.2),
      xlab="Chi-squared quantiles",
      ylab="Mahalanobis distances",
-     main="QQ plot - Assessment of multivariate normality")
+     main="Assessment of multivariate normality - QQ plot")
 abline(a = 0, b = 1, col="blue")
 text(x,d_square, labels=rownames(temp_df), pos=4,cex=0.7)
 
@@ -79,7 +79,7 @@ plot(x, d_square,
      pch=4, xlim=c(0,max(x)*1.2), ylim=c(0,max(d_square)*1.2),
      xlab="Chi-squared quantiles",
      ylab="Mahalanobis distances",
-     main="QQ plot with Multivariate Normality")
+     main="QQ plot on Normalized Data")
 abline(a = 0, b = 1, col="blue")
 
 text(x,d_square, labels=rownames(normalized_df), pos=4,cex=0.7)
@@ -91,7 +91,6 @@ rm(cov,d_square, mean,n,p,quantiles,x, raw.df, normalized_df)
 
 Based on the correlation matrix, we can see that some variables have a weak to no correlation at all with the Happiness_Score and thus can be easily removed before PCA Analysis: (11 vars.)
 
-
 Subseting the original dataset and calling the PCA function:
 ```{r, echo = TRUE, fig.width=8, fig.height=8}
 require(dplyr);require(FactoMineR);require(factoextra)
@@ -100,7 +99,7 @@ require(ggcorrplot);require(ggplot2)
 # full_best_df <- read.csv(file = "../../DATA/full_best_df.csv")
 # this command yields this error: Error in file(file, "rt") : cannot open the connection
 
-full_best_df <- read.csv("C:\\Users\\mmlec\\Desktop\\2018_World_Happiness_Multivariate_Analysis\\DATA\\full_best_df.csv")
+full_best_df <- read.csv("C:\\Users\\A541U\\Desktop\\Semester 2\\2. Descriptive R Project\\2018_World_Happiness_Multivariate_Analysis\\DATA\\full_best_df.csv")
 
 #row.names(full_best_df) <- full_best_df$Country
 
@@ -124,20 +123,28 @@ temp_for_plot$percentage.of.variance <- round(temp_for_plot$percentage.of.varian
 
 ggplot(data=temp_for_plot, aes(x=factor(xaxis), y=percentage.of.variance)) +
   geom_bar(stat="identity", fill="steelblue") +
-  geom_text(aes(label= paste0(temp_for_plot$percentage.of.variance, "%")), vjust=-0.3) +
-  theme_minimal() + xlab("Dimensions") + ylab("Percentage of explained variances")+
+  geom_text(aes(label= paste0(temp_for_plot$percentage.of.variance, "%")), 
+            fontface="bold", vjust=-0.3, size=4) +
+  theme_minimal() + xlab("Principal Components") + ylab("Percentage of explained variances")+
+  theme(axis.text = element_text(size=12), axis.title = element_text(size=14, face="bold"))+
   ggtitle("Scree Plot for PCA")+ theme(plot.title = element_text(hjust = 0.5)) 
 
 #annotate(geom = "text", x = 1, y = 23,size=6, label = "Country Development", color = "black",angle = 90) +
 #annotate(geom = "text", x = 2, y = 23, size=6, label = "<---- Freedom&Government trust", color = "black",angle = 90) +
 #annotate(geom = "text", x = 3, y = 23,size=6, label = "<---- Air Pollution", color = "black",angle = 90)
 
-ggcorrplot(res.pca$var$coord[,1:3], lab=T, insig ="blank") + coord_flip() + ggtitle("Quality of Representation per Dimension")
+temp <- res.pca$var$coord[,1:3]
+temp <- temp[c(6,12,4,5,9,16,10,14,9,15,8,2,17,13,11,3,1,7),1:3]
+
+ggcorrplot(temp, lab=T) + coord_flip() + ggtitle("Principal Components Scores")
+
+#ggcorrplot(res.pca$var$coord[,1:3], lab=T, insig ="blank") + coord_flip() + ggtitle("Principal Components Scores")
+
 #dimdesc(res.pca)
 
 #ggcorrplot(res.pca$var$cos2, lab=T, insig ="blank") + coord_flip() + ggtitle("Quality of Representation per Dimension")
 
-rm(eig,temp_for_plot,xaxis,temp_df)
+rm(eig,temp_for_plot,xaxis,temp_df,temp)
 ```
 
 Biplot of PC1 and PC2 on the variables and countries, respectively:
@@ -145,14 +152,15 @@ Biplot of PC1 and PC2 on the variables and countries, respectively:
 # Color by cos2 values: quality on the factor map
 
 fviz_pca_var(res.pca, col.var = "cos2",
-             gradient.cols = c("black","blue","red"), 
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), 
              repel = TRUE) # Avoid text overlapping
 
+temp_res_pca <- res.pca
 
-row.names(res.pca$ind$coord) <- full_best_df$Country
+row.names(temp_res_pca$ind$coord) <- full_best_df$Country
 
 #still need to solve the layout error for this graph in this rmd. 
-fviz_pca_ind(res.pca, col.ind = "cos2", 
+fviz_pca_ind(temp_res_pca, col.ind = "cos2", 
              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
              repel = TRUE) # Avoid text overlapping (slow if many points)
 ```
@@ -176,13 +184,13 @@ ind.p <- fviz_pca_ind(res.pca,
              palette = c("#00AFBB", "#E7B800", "#FC4E07", "blue","purple","red"),
              addEllipses = T, # Concentration ellipses
              ellipse.type= "euclid",
-             ellipse.level= 1,
-             repel=F)
+             ellipse.level= 1.35,
+             repel=T)
 
 ggpubr::ggpar(ind.p,
-              title = "Principal Component Analysis",
-              subtitle = "Grouping by Happiness Score",
-              caption = "Ellipse represented by the euclidean distance from the center",
+              title = "Principal Component Analysis - Grouping by happiness Score",
+              subtitle = "Ellipse based on the euclidean distance from center",
+              caption = "",
               xlab = "PC1", ylab = "PC2",
               legend.title = "Happiness Group", legend.position = "top")
 

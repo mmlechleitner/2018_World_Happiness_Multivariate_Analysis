@@ -165,12 +165,33 @@ fviz_dend(hc_res, cex = 0.5, k = 3,
           k_colors = "jco", type = "circular")
 
 # Visualize in Phylogenic manner: 
-fviz_dend(hc_res, k = 5, # Cut in four groups
-          k_colors = "jco",
+fviz_dend(hc_res, k = 5, # Cut in five groups
+          k_colors = "lancet",
           type = "phylogenic", repel = TRUE,
           phylo_layout = "layout.gem")
 
 ```
+
+FOR POSTER : good coloring for tree cluster by color:
+```{r, echo = FALSE, fig.width=12, fig.height=8}
+
+fviz_dend(hc_res, k = 5, # Cut in five groups
+          k_colors = "lancet",
+          type = "phylogenic", repel = TRUE,
+          phylo_layout = "layout.gem")
+
+
+
+fviz_dend(hc_res, k = 5, # Cut in four groups
+          cex = 0.5, # label size
+          k_colors = c("lancet"),
+          color_labels_by_k = TRUE, # color labels by groups
+          rect = TRUE, # Add rectangle around groups
+          rect_border = c("#2E9FDF", "#00AFBB", "#E7B800", "#FC4E07"), 
+          rect_fill = TRUE)
+
+```
+
 
 
 # Hybrid Hierarchical and K-Means Approach:
