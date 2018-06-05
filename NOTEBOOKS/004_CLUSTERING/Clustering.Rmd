@@ -138,24 +138,27 @@ fviz_cluster(pam.res,
 
 ```{r, echo = FALSE, fig.width=12, fig.height=8}
 set.seed(24286)
-hc_res <- cluster_df %>% 
+
+res.pca <- PCA(cluster_df, ncp = 3, graph = FALSE)
+
+hc_res <- res.pca %>% 
   dist(method = "euclidean") %>% 
   hclust(method = "ward.D2")
 
 # Cut tree into 4 groups
 grp <- cutree(hc_res, k = 3)
 
-fviz_dend(hc_res, k = 5, # Cut in four groups
+fviz_dend(hc_res, k = 3, # Cut in four groups
           cex = 0.5, # label size
-          k_colors = c("#2E9FDF", "#00AFBB", "#E7B800", "#FC4E07"),
+          k_colors = c("#2E9FDF", "#00AFBB", "#E7B800"), #, "#FC4E07"
           color_labels_by_k = TRUE, # color labels by groups
           rect = TRUE, # Add rectangle around groups
-          rect_border = c("#2E9FDF", "#00AFBB", "#E7B800", "#FC4E07"), 
+          rect_border = c("#2E9FDF", "#00AFBB", "#E7B800"), #, "#FC4E07" 
           rect_fill = TRUE)
 
 # Visualize in a Scatterplot across two primary PCAs:
 fviz_cluster(list(data = cluster_df, cluster = grp),
-             palette = c("#2E9FDF", "#00AFBB", "#E7B800", "#FC4E07"), 
+             palette = c("#2E9FDF", "#00AFBB", "#E7B800"),  #, "#FC4E07"
              ellipse.type = "convex", # Concentration ellipse
              repel = TRUE, # Avoid label overplotting (slow)
              show.clust.cent = FALSE, ggtheme = theme_minimal())
@@ -165,8 +168,8 @@ fviz_dend(hc_res, cex = 0.5, k = 3,
           k_colors = "jco", type = "circular")
 
 # Visualize in Phylogenic manner: 
-fviz_dend(hc_res, k = 5, # Cut in five groups
-          k_colors = "lancet",
+fviz_dend(hc_res, k = 3, # Cut in five groups
+          k_colors = "jco",
           type = "phylogenic", repel = TRUE,
           phylo_layout = "layout.gem")
 
@@ -220,6 +223,7 @@ fviz_silhouette(res_fuzzy, palette = "jco",
 ```{r, echo = FALSE, fig.width=12, fig.height=8}
 # Compute PCA with ncp = 3
 res.pca <- PCA(cluster_df, ncp = 3, graph = FALSE)
+res.pca$var
 # Compute hierarchical clustering on principal components
 res.hcpc <- HCPC(res.pca, graph = FALSE)
 
@@ -237,6 +241,13 @@ fviz_cluster(res.hcpc,
              palette = "jco",         # Color palette see ?ggpubr::ggpar
              ggtheme = theme_minimal(),
              main = "Factor map"
+)
+
+# Visualize in Phylogenic manner: 
+fviz_dend(hc_res, k = 3, # Cut in five groups
+          k_colors = "jco",
+          type = "phylogenic", repel = TRUE,
+          phylo_layout = "layout.gem"
 )
 
 # Principal components + tree
