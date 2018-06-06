@@ -8,7 +8,7 @@
 
 require(caret); require(mlbench); require(randomForest); require(dplyr)
 
-best <- read.csv("C:\\Users\\mmlec\\Desktop\\2018_World_Happiness_Multivariate_Analysis\\DATA\\happiness_10happiest.csv")
+best <- read.csv("C:\\Users\\mmlec\\Desktop\\2018_World_Happiness_Multivariate_Analysis\\DATA\\full_best_df_best3.csv")
 
 best_df <- best %>% select(-X,-Country,-Region)
 
@@ -101,8 +101,24 @@ plot(importance)
 
 require(ggplot2)
 
-ggplot(importance,)
+ggplot(importance)
 
 
+trainingset <- full_best_df %>% select(Econonmy_GDP_Per_Capita, Internet_Usage_Index, Electricity_Access_Population_Percentage, Health_Life_Expectancy)
 
+
+corr_matrix <- round(cor(trainingset), 1)
+
+ggcorrplot(corr_matrix, hc.order = TRUE, 
+           type = "lower", 
+           lab = TRUE, 
+           lab_size = 3, 
+           method="circle", 
+           colors = c("tomato2", "white", "springgreen3"), 
+           title="Correlation Matrix of Psychological Characteristics versus Drug Consumption", 
+           ggtheme=theme_bw)
+
+rm(corr_matrix)
+
+```
 

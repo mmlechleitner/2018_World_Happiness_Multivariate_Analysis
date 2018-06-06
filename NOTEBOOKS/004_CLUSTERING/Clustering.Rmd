@@ -141,14 +141,14 @@ set.seed(24286)
 
 res.pca <- PCA(cluster_df, ncp = 3, graph = FALSE)
 
-hc_res <- res.pca %>% 
+hc_res <- cluster_df %>% 
   dist(method = "euclidean") %>% 
   hclust(method = "ward.D2")
 
 # Cut tree into 4 groups
-grp <- cutree(hc_res, k = 3)
+grp <- cutree(hc_res, k = 5)
 
-fviz_dend(hc_res, k = 3, # Cut in four groups
+fviz_dend(hc_res, k = 5, # Cut in four groups
           cex = 0.5, # label size
           k_colors = c("#2E9FDF", "#00AFBB", "#E7B800"), #, "#FC4E07"
           color_labels_by_k = TRUE, # color labels by groups
@@ -164,11 +164,11 @@ fviz_cluster(list(data = cluster_df, cluster = grp),
              show.clust.cent = FALSE, ggtheme = theme_minimal())
 
 # Visualize in Circular manner:
-fviz_dend(hc_res, cex = 0.5, k = 3, 
+fviz_dend(hc_res, cex = 0.5, k = 5, 
           k_colors = "jco", type = "circular")
 
 # Visualize in Phylogenic manner: 
-fviz_dend(hc_res, k = 3, # Cut in five groups
+fviz_dend(hc_res, k = 5, # Cut in five groups
           k_colors = "jco",
           type = "phylogenic", repel = TRUE,
           phylo_layout = "layout.gem")
@@ -230,23 +230,23 @@ res.hcpc <- HCPC(res.pca, graph = FALSE)
 
 fviz_dend(res.hcpc, 
           cex = 0.7,                     # Label size
-          palette = "jco",               # Color palette see ?ggpubr::ggpar
+          palette = c("#0073C2","#868686","#EFC000"),               # Color palette see ?ggpubr::ggpar
           rect = TRUE, rect_fill = TRUE, # Add rectangle around groups
-          rect_border = "jco",           # Rectangle color
+          rect_border = c("#0073C2","#868686","#EFC000"),           # Rectangle color
           labels_track_height = 0.8      # Augment the room for labels
 )
 
 fviz_cluster(res.hcpc,
              repel = TRUE,            # Avoid label overlapping
              show.clust.cent = TRUE, # Show cluster centers
-             palette = "jco",         # Color palette see ?ggpubr::ggpar
+             palette = c("#0073C2","#868686","#EFC000"),         # Color palette see ?ggpubr::ggpar
              ggtheme = theme_minimal(),
              main = "Factor map"
 )
 
 # Visualize in Phylogenic manner: 
-fviz_dend(hc_res, k = 3, # Cut in five groups
-          k_colors = "jco",
+fviz_dend(res.hcpc, k = 5, # Cut in five groups
+          k_colors = c("#0073C2","#868686","#EFC000"),
           type = "phylogenic", repel = TRUE,
           phylo_layout = "layout.gem"
 )

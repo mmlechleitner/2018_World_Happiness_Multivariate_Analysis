@@ -28,23 +28,14 @@ library(matrixcalc)
 library(psych)
 
 #Load dataset
-happiness_normal <- read.csv("C:/Users/mmlec/Desktop/2018_World_Happiness_Multivariate_Analysis/DATA/full_best_df.csv")
+full_best_df <- read.csv("C:/Users/mmlec/Desktop/2018_World_Happiness_Multivariate_Analysis/DATA/full_best_df.csv")
 
 #Selecting only numeric values with KMO>0.6 and Loadings>0.5 
-selected <- happiness_normal %>%
-  select(-X,
-         -Country,
-         -Region,
-         -Happiness_Score,
-         -Total_Population,
-         -Mental_and_Substance_Disorder_Index,
-         -Compulsory_Education_in_Years,
-         -Agricultural_Land_Percentage,
-         -Generosity,
-         #-Infant_Immunization_Measles_Index,
-         -Forest_Area_Land_Percentage,
-         -Suicide_Index,
-         -Legal_Rights_Index)
+selected <- full_best_df %>% select(
+  -X,-Country,-Region,-Happiness_Score,-Generosity,-Total_Population,
+  -Mental_and_Substance_Disorder_Index,-Alcohol_Consumption_Index,-Suicide_Index,
+  -Population_Growth_Rate,-HIV_Disease_Index,-Compulsory_Education_in_Years,
+  -Agricultural_Land_Percentage,-Forest_Area_Land_Percentage,-Legal_Rights_Index)
 selected<-data.matrix(selected)
 
 ```
